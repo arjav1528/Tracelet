@@ -17,6 +17,15 @@ jobs:
         with:
           go-version: '1.27.4'
           cache: true
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.node-version'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm --prefix web ci
+      - run: make web-check
+      - run: make web
+      - run: git diff --exit-code -- web/dist
       - run: go mod download
       - run: make check
       - run: go test -race ./...

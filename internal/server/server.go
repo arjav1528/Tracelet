@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"io"
 	"net"
 	"net/http"
 	"strconv"
@@ -105,7 +104,7 @@ func (s *Server) Close(ctx context.Context) error {
 func (s *Server) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'")
 	w.Header().Set("X-Frame-Options", "DENY")
 	w.Header().Set("Referrer-Policy", "no-referrer")
 	origins, sites := request.Header.Values("Origin"), request.Header.Values("Sec-Fetch-Site")
@@ -122,8 +121,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 		s.serveAPI(w, request)
 		return
 	}
-	if request.URL.Path != "/" && request.URL.Path != "/healthz" {
-		http.Error(w, "route not found", http.StatusNotFound)
+	if request.URL.Path != "/healthz" {
+		serveAsset(w, request)
 		return
 	}
 	if request.Method != http.MethodGet {
@@ -136,6 +135,4 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 		_ = json.NewEncoder(w).Encode(s.health)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	_, _ = io.WriteString(w, "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Tracelet</title><main><h1>Tracelet</h1><p>Your local trace history session is running.</p></main></html>")
 }

@@ -12,4 +12,4 @@ Discovery checks literal loopback endpoints, matching project and random instanc
 
 The public health endpoint exposes no telemetry or capability. The private browser URL contains `#token=...`; fragments are not sent as HTTP request targets. Treat that URL as access to this local session. The forthcoming browser UI sends the capability in `X-Tracelet-Token` for data requests. Status output and ordinary run logs omit it. This is local access protection, not a multiuser authentication system.
 
-At T09 the page is a minimal session placeholder. Trace lists and waterfall inspection are implemented in T12–T15. History lifecycle is covered by CLI tests, including read-only inactive status, verified discovery, no-open behavior, browser fallback, run/history ownership conflict and cleanup.
+The embedded browser reads the protected API and shows the trace list, status and settings. T14–T15 add waterfall and full span inspection. History lifecycle is covered by CLI tests, including read-only inactive status, verified discovery, no-open behavior, browser fallback, run/history ownership conflict and cleanup.

@@ -175,7 +175,7 @@ func TestUnsupportedRoutesAndMethods(t *testing.T) {
 		method, path string
 		want         int
 	}{
-		{"POST", "/healthz", 405}, {"HEAD", "/", 405}, {"OPTIONS", "/", 405}, {"GET", "/api/traces", 404}, {"GET", "/v1/traces", 404},
+		{"POST", "/healthz", 405}, {"HEAD", "/", 200}, {"OPTIONS", "/", 405}, {"GET", "/api/traces", 404}, {"GET", "/v1/traces", 404},
 	} {
 		request, err := http.NewRequest(tc.method, s.URL()+tc.path, nil)
 		if err != nil {
@@ -192,7 +192,11 @@ func TestUnsupportedRoutesAndMethods(t *testing.T) {
 		if response.StatusCode != tc.want {
 			t.Fatalf("%s %s: status %d", tc.method, tc.path, response.StatusCode)
 		}
-		if tc.want == 405 && response.Header.Get("Allow") != "GET" {
+		wantAllow := "GET"
+		if tc.path == "/" {
+			wantAllow = "GET, HEAD"
+		}
+		if tc.want == 405 && response.Header.Get("Allow") != wantAllow {
 			t.Fatal("missing method guidance")
 		}
 	}

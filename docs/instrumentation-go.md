@@ -19,7 +19,7 @@ curl http://127.0.0.1:8080/orders/error
 
 The sample creates an HTTP root, authentication and slow lookup spans, an event, a client span and a local downstream server span with propagated W3C context. The error route records an exception and error status. Source attributes are explicitly added to custom spans. Sample request bodies are synthetic and are not captured. Select a different sample port using `--addr 127.0.0.1:8081` after the child executable.
 
-Stop with Ctrl+C. Tracelet forwards the signal to the child process group, keeps ingestion available during configured shutdown grace, then drains the receiver and closes storage. The sample flushes the SDK within three seconds. A second interrupt or expired grace forces process-tree termination; telemetry that the application has not exported may be lost. Normal child exits retain their exit code. Browser inspection is added by subsequent planned tasks.
+Stop with Ctrl+C. Tracelet forwards the signal to the child process group, keeps ingestion available during configured shutdown grace, then drains the receiver and closes storage. The sample flushes the SDK within three seconds. A second interrupt or expired grace forces process-tree termination; telemetry that the application has not exported may be lost. Normal child exits retain their exit code. Open `tracelet ui` in another terminal to inspect the real trace list, or use `tracelet ui --no-open` for the private URL. After capture stops, `tracelet ui` serves stored history until Ctrl+C. Waterfall/detail views follow in T14–T15.
 
 The required `--` separates Tracelet options from child arguments. For an already-instrumented application:
 

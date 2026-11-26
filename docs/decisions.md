@@ -32,3 +32,13 @@ References: [OTel exporter module](https://github.com/open-telemetry/opentelemet
 - Separate the public random instance identity from the private API nonce. Health checks validate the former and never send or return the latter. Require the private nonce on every data API request, including same-origin browser requests; this strengthens the original origin-only browser proposal without changing SDK protocol.
 - The explicit `ui` command opens/prints a fragment capability URL. Normal `run` logs and read-only `status` omit the capability. The browser will remove the fragment after retaining it per tab. Same-user malware with access to private descriptors remains outside the local threat model.
 - `run` binds both listeners before child startup; `ui` either connects to verified active ownership or keeps foreground history ownership until stopped. No ownership transfer, background daemon or PID-based killing is introduced.
+
+
+## 2026-11-26 — T13 offline browser build
+
+- Pin React/react-dom 19.3.1, TypeScript 7.0.2, Vite 8.3.8 and Vitest 5.1.2 with one npm lockfile. Use system fonts, ordinary CSS and accessible native controls; no runtime CDN or remote dependency.
+- Pin Node 26.13.1 for the build and CI; the local verified toolchain is isolated under `/tmp`, leaving the system installation untouched. CI setup-node 7.1.0 is pinned to 949feb2413d6458794dcd2491c4babbbce0c15c1. End users need neither Node nor Go.
+- Keep generated `web/dist` in Git and embed it through `web.FS()`. Fresh Go-only builds/tests can use those assets; `make build` regenerates them. CI rebuilds and checks for bundle drift. This replaces the proposed separate `internal/webassets` copy step.
+- Private data remains API-only. Static assets contain no instance secret. CSP allows scripts/styles/connects from self, with inline style attributes solely for generated timeline geometry; no inline scripts or telemetry HTML.
+
+References: [Node 26.13.1 release](https://nodejs.org/en/blog/release/v26.13.1), [setup-node 7.1.0 source](https://github.com/actions/setup-node/commit/949feb2413d6458794dcd2491c4babbbce0c15c1), [React](https://react.dev/), [Vite](https://vite.dev/guide/), [Vitest](https://vitest.dev/guide/).

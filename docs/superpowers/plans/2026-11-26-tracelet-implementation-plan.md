@@ -423,12 +423,12 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 ### T13 / C13 — Embed an offline trace-list UI
 
-**Depends on:** T12. **Files:** `web/`, `internal/webassets/assets.go`, Go server asset routes, `Makefile`, CI frontend jobs.
+**Depends on:** T12. **Files:** `web/`, `web/embed.go`, Go server asset routes, `Makefile`, CI frontend jobs.
 
-- [ ] Pin React/TypeScript/Vite and minimal accessible UI/testing dependencies; add one npm lockfile, typecheck/lint/test/build scripts and embed the production bundle into the Go binary.
-- [ ] Implement project/status overview, recent trace list, operation search, sort, bounded paging, manual refresh and read-only effective settings. Show service/operation/start/duration/error/span count.
-- [ ] Test loading/no-project/no-session/no-telemetry/rejected/no-results/API-error states, list keyboard use and safe rendering of malicious span names. Use fixtures only for isolated tests; main UI calls the real API.
-- [ ] Run UI scripts, `make build`, and an offline packaged-binary smoke with no dev server/CDN. Commit: `feat(web): embed offline trace list and session overview`.
+- [x] Pin React/TypeScript/Vite and minimal accessible UI/testing dependencies; add one npm lockfile, typecheck/lint/test/build scripts and embed the production bundle into the Go binary.
+- [x] Implement project/status overview, recent trace list, operation search, sort, bounded paging, manual refresh and read-only effective settings. Show service/operation/start/duration/error/span count.
+- [x] Test loading/no-project/no-session/no-telemetry/rejected/no-results/API-error states, list keyboard use and safe rendering of malicious span names. Use fixtures only for isolated tests; main UI calls the real API.
+- [x] Run UI scripts, `make build`, and an offline packaged-binary smoke with no dev server/CDN. Commit: `feat(web): embed offline trace list and session overview`.
 
 **Done when:** installed binary serves a functional accessible list of real persisted traces.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M3 (in progress); M0–M2 complete
-Current task: T13 (implementation)
-Last completed task: T12
+Current task: T14 (implementation)
+Last completed task: T13
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C12 (see git log)
+Branch / HEAD: feat/tracelet-core / C13 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run/sample, private sessions/history, retention, query and protected API
-Verification run: full make check passed; API/CLI/storage focused race checks pass; private-token/Host/Origin/query bounds and golden response contracts verified
-Next action: embed/verify T13 real trace list, then T14 waterfall; T16 source/T17 export preparation in parallel; retain session provenance migration follow-up
+Verification run: UI17 tests/typecheck/lint/build pass on pinned Node; server/CLI race pass; actual embedded binary served3 sample traces/13 spans, summary/search/no-results/recovery verified at1280px and390px, no browser errors
+Next action: T14 waterfall then T15 span inspection; T16 source/T17 export/T18 diagnostics prepared in parallel; retain session provenance migration follow-up
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T12 complete | Protected status/list/timeline/detail API, bounded reads, safe errors and golden fixtures | Full make check pass; API/CLI/storage race pass; token/origin/Host, revisions, SQL-like search, timeout/not-found, retention race and response cap tested | C12 (this commit) | T13; public page remains placeholder until bundled UI lands |
+| 2026-11-26 | T13 complete | Embedded React trace list, protected API client, exact summaries, status/settings/search/paging and offline assets/build CI | UI17 tests/typecheck/lint/build pass; server/CLI race pass; real sample UI at1280/390 widths, search recovery, removed token fragment, no browser errors; no dev server/CDN | C13 (this commit) | T14; browser-wide blocked-external-network proof remains T19 |
+| 2026-11-26 | T12 complete | Protected status/list/timeline/detail API, bounded reads, safe errors and golden fixtures | Full make check pass; API/CLI/storage race pass; token/origin/Host, revisions, SQL-like search, timeout/not-found, retention race and response cap tested | f485d19 | T13; public page remains placeholder until bundled UI lands |
 | 2026-11-26 | T11 complete | Whole-trace age/budget pruning, physical sidecar accounting, admission pressure, startup/minute maintenance | Storage/session/collector race+vet pass; age/quiet boundaries, oldest-first, rollback, metadata/revision, duplicate retry, disk pressure/reclamation; CLI startup and injected periodic tick tests | 6395d71 | T12; visible API usage next, bounded overshoot documented |
 | 2026-11-26 | T10 complete | Snapshot trace/span queries, revision-bound keyset pages and iterative honest hierarchy | Storage/trace race+vet pass; all sort ties/cursor binding, late parents, orphan/cycle/deep trees, exact payloads and scalar-only timeline tested | cb49b7e | T11; caller must gather one full revision before hierarchy warnings |
 | 2026-11-26 | T09 complete | Private discovery descriptor, public identity health, minimal UI listener, foreground history, ui/status CLI | Session/server/CLI race+vet pass; stale/reused PID recovery, browser fallback, ownership conflict and cleanup; independent review fixed early signal handling | d86afdb | T10; UI placeholder until T13, Windows ACL/native behavior remains unverified |

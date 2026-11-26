@@ -2,7 +2,7 @@
 
 Local-first application observability for developers.
 
-**Status: local capture and child supervision work; browser UI is in progress.** Tracelet receives OpenTelemetry traces from an instrumented Go application, stores them locally, and will display a browser waterfall with span details and available source locations.
+**Status: local capture, stored history and the browser trace list work; waterfall and detailed inspection are in progress.** Tracelet receives OpenTelemetry traces from an instrumented Go application and stores them locally.
 
 Start with the **[complete implementation plan and agent handoff](docs/superpowers/plans/2026-11-26-tracelet-implementation-plan.md)**. That single Markdown file contains the product context, architecture, 25 required tasks, dependencies, tests, planned commits, GitHub workflow, optional work, future backlog, and full requirement-to-task mapping. It can be given to another model without the original attachments.
 
@@ -16,6 +16,6 @@ New authored commits must use **Arjav Patel <arjav1528@gmail.com>**, configured 
 
 ## Development
 
-Use the pinned Go toolchain, then run `make check` and `make build`. The current executable supports `./dist/tracelet version`, `init`, `run`, `ui`, `status`, and help. See [configuration](docs/configuration.md) for safe defaults and overwrite behavior. Follow the [Go sample guide](docs/instrumentation-go.md) to capture real traces.
+Use the pinned Go toolchain and Node version in `.node-version`. Run `npm --prefix web ci`, `make check`, `make web-check` and `make build`. Node is a build dependency only; the installed binary embeds the UI. The current executable supports `./dist/tracelet version`, `init`, `run`, `ui`, `status`, and help. See [configuration](docs/configuration.md) for safe defaults and overwrite behavior. Follow the [Go sample guide](docs/instrumentation-go.md) to capture real traces.
 
-See [sessions and history](docs/sessions.md) for local ownership and browser discovery. The current history page is a placeholder while the explorer is built.
+See [sessions and history](docs/sessions.md) for local ownership and browser discovery. The browser reads real local traces and includes operation search, sorting, paging, session status and read-only settings.
