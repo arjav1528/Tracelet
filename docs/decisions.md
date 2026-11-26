@@ -19,3 +19,10 @@ References: [Go releases](https://go.dev/dl/), [Cobra release](https://github.co
 - Project YAML uses the maintained security-fix branch `go.yaml.in/yaml/v3` v3.0.6 with strict field decoding and domain validation. Its distribution contains Apache-2.0 and MIT-licensed portions. The parser dependency is prepared alongside the spike dependencies for the immediately following T03.
 
 References: [OTel exporter module](https://github.com/open-telemetry/opentelemetry-go/tree/v1.47.0/exporters/otlp/otlptrace/otlptracehttp), [OTLP generated types](https://github.com/open-telemetry/opentelemetry-proto-go/tree/v1.11.1), [SQLite driver](https://pkg.go.dev/modernc.org/sqlite), [YAML parser](https://github.com/yaml/go-yaml/tree/v3.0.6).
+
+## 2026-11-26 — T06 persistence safeguards
+
+- The shared ingest result lives in `internal/ingestion/result.go`; storage aliases it so the collector sink does not introduce an import cycle.
+- Schema 0 migration applies only to an empty database. Unrelated nonempty files and incomplete/current-but-incompatible schemas are rejected read-only, preserving original bytes in tests.
+- Incremental vacuum must be enabled before WAL/table creation. The driver probe confirmed that reversing the order leaves mode 0. Verified-empty prewritten files may receive one empty-database preparation; no nonempty unsupported database is rebuilt. Schema 1 requires reclamation mode 2.
+- Windows drive file URIs require a leading slash (`file:///C:/...`), verified with Go URL parsing; network/UNC database locations are rejected. Native Windows execution remains a release gate.

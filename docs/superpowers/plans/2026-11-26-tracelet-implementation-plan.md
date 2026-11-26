@@ -347,10 +347,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T03–T05. **Files:** `internal/storage/sqlite.go`, `ingest.go`, `migrations/001_init.sql`, `internal/session/lock.go` and OS-specific lock files, storage/lock tests, `docs/architecture.md`.
 
-- [ ] Implement the minimal OS-backed project ownership lock before any writable open; callers acquire it before `storage.Open`. Keep the lock package independent of storage to avoid import cycles. Test competing owners and release-after-crash. Implement schema v1, transactional `Store.Ingest`, constrained resource/scope reuse, and indexes measured in the spike. Apply sanitizer at the ingestion boundary; never persist unsanitized request buffers.
-- [ ] Define first-committed-wins duplicate behavior and atomically update trace summaries; accepted data means commit completed. Use bounded batches and document durability configuration.
-- [ ] Add tests for close/reopen, duplicate retry, conflicting duplicate, typed metadata, transaction rollback, permissions, older-to-current migration, failed migration, unknown newer schema, and disk/write failure.
-- [ ] Run `go test ./internal/storage` and integrity checks on a reopened fixture DB. Commit: `feat(storage): persist sanitized traces with versioned SQLite migrations`.
+- [x] Implement the minimal OS-backed project ownership lock before any writable open; callers acquire it before `storage.Open`. Keep the lock package independent of storage to avoid import cycles. Test competing owners and release-after-crash. Implement schema v1, transactional `Store.Ingest`, constrained resource/scope reuse, and indexes measured in the spike. Apply sanitizer at the ingestion boundary; never persist unsanitized request buffers.
+- [x] Define first-committed-wins duplicate behavior and atomically update trace summaries; accepted data means commit completed. Use bounded batches and document durability configuration.
+- [x] Add tests for close/reopen, duplicate retry, conflicting duplicate, typed metadata, transaction rollback, permissions, older-to-current migration, failed migration, unknown newer schema, and disk/write failure.
+- [x] Run `go test ./internal/storage` and integrity checks on a reopened fixture DB. Commit: `feat(storage): persist sanitized traces with versioned SQLite migrations`.
 
 **Done when:** accepted sanitized telemetry is durable and retries cannot create duplicate rows or inconsistent counts.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T06 (in progress)
-Last completed task: T05
+Current task: T07 (in progress)
+Last completed task: T06
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C05 (see git log)
+Branch / HEAD: feat/tracelet-core / C06 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: version/help/init CLI, strict configuration v1, isolated SDK/SQLite feasibility
-Verification run: T01 tests failed before implementation; make check/build and CLI smoke now pass
-Next action: finish T06 storage and ownership, then T07 bounded receiver
+Verification run: committed tasks T00–T06 have focused passing checks; T07 receiver is in progress, so full workspace may include unfinished tests
+Next action: finish T07 receiver, then connect T08 supervisor and sample
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T05 complete | Recursive sanitizer, shared safe defaults, bounded marker reports and privacy docs | Sensitive sentinel absent in all serialized containers; typed values retained; privacy/config/CLI race+vet pass; count mismatch RED→GREEN | C05 (this commit) | T06; free-text values are not guaranteed scrubbed |
+| 2026-11-26 | T06 complete | Private schema-v1 SQLite storage, durable sanitized transactions, duplicate rules and OS ownership locks | Storage/session tests+race+vet pass; crash releases lock; disk/write failure rollback; unsupported DB preservation; Windows/Linux lock crosscompile | C06 (this commit) | T07; native non-macOS tests and full crash/load gates remain |
+| 2026-11-26 | T05 complete | Recursive sanitizer, shared safe defaults, bounded marker reports and privacy docs | Sensitive sentinel absent in all serialized containers; typed values retained; privacy/config/CLI race+vet pass; count mismatch RED→GREEN | 04ba236 | T06; free-text values are not guaranteed scrubbed |
 | 2026-11-26 | T04 complete | Typed summaries, exact ProtoJSON wrapper, bounded identity/time/attribute validation and synthetic fixture generators | Focused tests/race pass; exact nanosecond/int64/bytes roundtrips; all fixture shapes validated | 0f3ef8e | T05; envelope byte IDs are base64, query IDs hex |
 | 2026-11-26 | T03 complete | Versioned YAML config, init/force, data paths, validation and docs | Missing Init/Load and init command RED→GREEN; invalid NUL path RED→GREEN; config/CLI tests, full check/build pass | e5868ee | T04; no production capture yet |
 | 2026-11-26 | T02 complete | Isolated gzip SDK/SQLite spike, 100k-span layout comparison, feasibility and benchmark docs | SDK→commit→fresh process preserves exact metadata; focused race/vet and full make check/build pass with loopback permission | 87587a9 | T03; measurements storage-only, not release NFR proof |
