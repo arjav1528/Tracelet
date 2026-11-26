@@ -358,10 +358,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T05, T06. **Files:** `internal/collector/receiver.go`, `internal/ingestion/pipeline.go`, protocol tests, `testdata/otlp/`.
 
-- [ ] Implement retained loopback listener, generated Protobuf decoding/response, gzip, request/decoded/count limits, timeouts, bounded concurrency/queue, backpressure, and commit-before-acknowledgement.
-- [ ] Test valid/empty/mixed-invalid batches, malformed Protobuf/gzip, wrong method/media type/encoding, wire and decoded oversize, zero IDs, queue saturation, writer failure, cancellation, and a valid request immediately after rejection.
-- [ ] Verify real pinned Go SDK interoperability and accurate OTLP partial-success/retry semantics; do not return an HTML or private JSON error to a Protobuf exporter.
-- [ ] Run `go test ./internal/collector ./internal/ingestion ./internal/storage`; commit: `feat(collector): receive bounded OTLP HTTP trace exports`.
+- [x] Implement retained loopback listener, generated Protobuf decoding/response, gzip, request/decoded/count limits, timeouts, bounded concurrency/queue, backpressure, and commit-before-acknowledgement.
+- [x] Test valid/empty/mixed-invalid batches, malformed Protobuf/gzip, wrong method/media type/encoding, wire and decoded oversize, zero IDs, queue saturation, writer failure, cancellation, and a valid request immediately after rejection.
+- [x] Verify real pinned Go SDK interoperability and accurate OTLP partial-success/retry semantics; do not return an HTML or private JSON error to a Protobuf exporter.
+- [x] Run `go test ./internal/collector ./internal/ingestion ./internal/storage`; commit: `feat(collector): receive bounded OTLP HTTP trace exports`.
 
 **Done when:** M1 ingestion accepts valid input durably and fails safely under hostile or overloaded input.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T07 (in progress)
-Last completed task: T06
+Current task: T08 (in progress)
+Last completed task: T07
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C06 (see git log)
+Branch / HEAD: feat/tracelet-core / C07 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
-Verified implementation: version/help/init CLI, strict configuration v1, isolated SDK/SQLite feasibility
-Verification run: committed tasks T00–T06 have focused passing checks; T07 receiver is in progress, so full workspace may include unfinished tests
-Next action: finish T07 receiver, then connect T08 supervisor and sample
+Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver
+Verification run: T07 protocol, real SDK→SQLite, ingestion/collector race and vet pass; concurrent T08–T10 work remains uncommitted
+Next action: commit verified T08 child supervision and sample, then T09 sessions
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T06 complete | Private schema-v1 SQLite storage, durable sanitized transactions, duplicate rules and OS ownership locks | Storage/session tests+race+vet pass; crash releases lock; disk/write failure rollback; unsupported DB preservation; Windows/Linux lock crosscompile | C06 (this commit) | T07; native non-macOS tests and full crash/load gates remain |
+| 2026-11-26 | T07 complete | Binary OTLP/gzip receiver, bounded decode and pending memory, durable ACK, safe errors/partial success | Protocol and real SDK→SQLite tests pass; collector/ingestion race+vet pass; malformed and overloaded requests recover | C07 (this commit) | T08; sustained load and cross-platform gates remain |
+| 2026-11-26 | T06 complete | Private schema-v1 SQLite storage, durable sanitized transactions, duplicate rules and OS ownership locks | Storage/session tests+race+vet pass; crash releases lock; disk/write failure rollback; unsupported DB preservation; Windows/Linux lock crosscompile | 818fb62 | T07; native non-macOS tests and full crash/load gates remain |
 | 2026-11-26 | T05 complete | Recursive sanitizer, shared safe defaults, bounded marker reports and privacy docs | Sensitive sentinel absent in all serialized containers; typed values retained; privacy/config/CLI race+vet pass; count mismatch RED→GREEN | 04ba236 | T06; free-text values are not guaranteed scrubbed |
 | 2026-11-26 | T04 complete | Typed summaries, exact ProtoJSON wrapper, bounded identity/time/attribute validation and synthetic fixture generators | Focused tests/race pass; exact nanosecond/int64/bytes roundtrips; all fixture shapes validated | 0f3ef8e | T05; envelope byte IDs are base64, query IDs hex |
 | 2026-11-26 | T03 complete | Versioned YAML config, init/force, data paths, validation and docs | Missing Init/Load and init command RED→GREEN; invalid NUL path RED→GREEN; config/CLI tests, full check/build pass | e5868ee | T04; no production capture yet |
