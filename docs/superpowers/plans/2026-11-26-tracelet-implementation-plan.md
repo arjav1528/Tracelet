@@ -153,7 +153,7 @@ Resolve existing trace-specific exporter values before generic values. If either
 
 ### Lifecycle and session ownership contract
 
-1. Acquire an OS-backed project lock before writable DB ownership. Store a private session descriptor atomically with project ID, owner PID, random instance nonce, UI/receiver endpoints, version, and role. PID alone is insufficient because PIDs are reused.
+1. Acquire an OS-backed project lock before writable DB ownership. Store a private session descriptor atomically with project ID, owner PID, public random instance ID, separate private API nonce, UI/receiver endpoints, version, and role. PID alone is insufficient because PIDs are reused.
 2. `run` validates config, opens DB, binds/retains listeners, passes readiness checks, publishes discovery state, then starts the child directly with argument boundaries intact; do not invoke a shell unnecessarily. Publish no ready descriptor on failure.
 3. `ui` connects to a healthy matching active instance and opens/prints its URL. With no owner, it starts a foreground history UI with DB ownership and retention, no child and no receiver. It prints how to stop it and stays running. A subsequent `run` reports that the foreground history UI must be stopped; seamless ownership transfer is deferred.
 4. `status` and `doctor` do not start services. Validate descriptor identity via a bounded health check; an unrelated process on a reused port is not Tracelet. Clear stale descriptors only while holding the project lock. Never kill a process merely because a descriptor names its PID.
@@ -193,7 +193,7 @@ Collect all timeline-node pages for one trace revision before final missing-pare
 
 Validate all path/query inputs, restrict sort keys to an allowlist, parameterize SQL, and return a uniform safe error `{error:{code,message}}`. Never include SQL/payloads/secrets in errors. Non-OTLP API errors use suitable HTTP statuses; no dynamic filesystem route or command execution endpoint.
 
-Loopback binding alone is insufficient. Enforce allowed Host/port and browser Origin; no wildcard CORS, reject hostile/null origins and cross-site browser fetches, serve no sensitive state through unauthenticated cross-origin scripts, and test DNS-rebinding-style Host values. Allow originless SDK traffic on the collector with appropriate content type. On the API, accept same-origin browser requests that omit Origin after Host/fetch-metadata checks, and native local CLI requests authenticated with the private instance nonce in a header. Reject a supplied hostile Origin or cross-site fetch metadata. Test these cases separately; do not reject every request merely because Origin is absent. Do not invent a mandatory OTLP auth extension. The threat model excludes a malicious same-user local process that already has filesystem access. Add restrictive CSP/frame policy, no third-party/CDN assets, no HTML rendering of telemetry, and clear caching rules for private responses. Non-loopback support is rejected in v0.1 rather than advertising unreviewed remote hosting.
+Loopback binding alone is insufficient. Enforce allowed Host/port and browser Origin; no wildcard CORS, reject hostile/null origins and cross-site browser fetches, serve no sensitive state through unauthenticated cross-origin scripts, and test DNS-rebinding-style Host values. Allow originless SDK traffic on the collector with appropriate content type. Every API request must carry the private instance nonce in `X-Tracelet-Token`, including same-origin browser requests that omit Origin. The explicit `ui` command supplies this capability in a URL fragment; the browser retains it in tab memory/session storage and removes the fragment. Native CLI requests read the private descriptor. Public health identity never exposes this nonce. Host/fetch-metadata checks still apply. Reject a supplied hostile Origin or cross-site fetch metadata. Test these cases separately; do not reject every request merely because Origin is absent. Do not invent a mandatory OTLP auth extension. The threat model excludes a malicious same-user local process that already has filesystem access. Add restrictive CSP/frame policy, no third-party/CDN assets, no HTML rendering of telemetry, and clear caching rules for private responses. Non-loopback support is rejected in v0.1 rather than advertising unreviewed remote hosting.
 
 Export proposal: `{format:"tracelet.trace", version:1, exported_at:<RFC3339>, trace:<summary>, resource_spans:<OTLP ProtoJSON data>, warnings:[]}`. The format document must show an example, type/encoding rules, schema version, redaction marker, and completeness limitations. Full trace structure, all retained typed values, scope/events/links, nanosecond precision and warnings must survive an export/reparse fixture test. Read summary, resources/scopes and spans from one SQLite read transaction/snapshot; concurrent retention yields a complete earlier snapshot or clear not-found, never a partial successful export. Generated ProtoJSON byte fields (including trace/span IDs) use base64; query-summary IDs use hexadecimal strings. This is a Tracelet envelope, not an OTLP/JSON wire request or a promise of direct import into any OTLP viewer; an import command is deferred. Reapply current privacy policy on export of older records. `--out` creates a file exclusively or requires explicit overwrite; use a private temp file and atomic replacement where supported, clean up on failure, and keep stdout JSON separate from stderr diagnostics.
 
@@ -381,10 +381,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T08. **Files:** `internal/session/`, `internal/cli/ui.go`, `internal/cli/status.go`, session tests.
 
-- [ ] Reuse the T06 ownership lock; add atomic private descriptor, nonce-verified discovery, stale cleanup, and foreground history mode from §3.
-- [ ] Make `ui` connect/open/print or start history UI; make `status` read-only and safe when no process is active. A minimal history HTTP page is sufficient until T13.
-- [ ] Test two simultaneous owners, stale PID/reused port, crash leftovers, browser-opening failure, `--no-open`, history-only mode, and run-during-history conflict; never kill an unrelated process.
-- [ ] Run `go test ./internal/session ./internal/cli`; commit: `feat(session): add local ownership discovery and history browsing lifecycle`.
+- [x] Reuse the T06 ownership lock; add atomic private descriptor, instance-verified discovery, stale cleanup, and foreground history mode from §3.
+- [x] Make `ui` connect/open/print or start history UI; make `status` read-only and safe when no process is active. A minimal history HTTP page is sufficient until T13.
+- [x] Test two simultaneous owners, stale PID/reused port, crash leftovers, browser-opening failure, `--no-open`, history-only mode, and run-during-history conflict; never kill an unrelated process.
+- [x] Run `go test ./internal/session ./internal/cli`; commit: `feat(session): add local ownership discovery and history browsing lifecycle`.
 
 **Done when:** separate CLI invocations reliably identify the correct project instance and stored data can reopen.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T09 (in progress)
-Last completed task: T08
+Current task: T10 (review)
+Last completed task: T09
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C08 (see git log)
+Branch / HEAD: feat/tracelet-core / C09 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run and instrumented sample
-Verification run: receiver/ingestion/CLI/supervisor/sample race tests pass; built sample produced 2 traces/8 spans, flushed on Ctrl+C, and reopened durably; T09–T11 work in progress
-Next action: finish T09 discovery/history lifecycle; integrate T10 queries
+Verification run: session/server/CLI/trace/storage race+vet pass; stale descriptor, read-only status, browser fallback and history/run conflict verified; review found/fixed UI startup signal window
+Next action: commit reviewed T10 queries, integrate T11 maintenance, then T12 API
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T08 complete | Child environment precedence, direct argv/output, bounded process-tree shutdown, run CLI and Go sample | Race tests pass; startup failure releases ownership; built sample captures 2 traces/8 spans and error status, Ctrl+C exit0/reopen; Windows/Linux supervisor crosscompile | C08 (this commit) | T09; native Windows/Linux lifecycle unverified |
+| 2026-11-26 | T09 complete | Private discovery descriptor, public identity health, minimal UI listener, foreground history, ui/status CLI | Session/server/CLI race+vet pass; stale/reused PID recovery, browser fallback, ownership conflict and cleanup; independent review fixed early signal handling | C09 (this commit) | T10; UI placeholder until T13, Windows ACL/native behavior remains unverified |
+| 2026-11-26 | T08 complete | Child environment precedence, direct argv/output, bounded process-tree shutdown, run CLI and Go sample | Race tests pass; startup failure releases ownership; built sample captures 2 traces/8 spans and error status, Ctrl+C exit0/reopen; Windows/Linux supervisor crosscompile | defc49f | T09; native Windows/Linux lifecycle unverified |
 | 2026-11-26 | T07 complete | Binary OTLP/gzip receiver, bounded decode and pending memory, durable ACK, safe errors/partial success | Protocol and real SDK→SQLite tests pass; collector/ingestion race+vet pass; malformed and overloaded requests recover | f0c075d | T08; sustained load and cross-platform gates remain |
 | 2026-11-26 | T06 complete | Private schema-v1 SQLite storage, durable sanitized transactions, duplicate rules and OS ownership locks | Storage/session tests+race+vet pass; crash releases lock; disk/write failure rollback; unsupported DB preservation; Windows/Linux lock crosscompile | 818fb62 | T07; native non-macOS tests and full crash/load gates remain |
 | 2026-11-26 | T05 complete | Recursive sanitizer, shared safe defaults, bounded marker reports and privacy docs | Sensitive sentinel absent in all serialized containers; typed values retained; privacy/config/CLI race+vet pass; count mismatch RED→GREEN | 04ba236 | T06; free-text values are not guaranteed scrubbed |

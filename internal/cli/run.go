@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/cobra"
 	"tracelet.local/tracelet/internal/collector"
 	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/session"
 	"tracelet.local/tracelet/internal/storage"
 	"tracelet.local/tracelet/internal/supervisor"
 )
@@ -41,7 +40,7 @@ func runCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			lock, err := session.Acquire(cfg.Storage.Path + ".lock")
+			lock, err := acquireProject(command.Context(), cfg)
 			if err != nil {
 				return err
 			}
@@ -61,6 +60,14 @@ func runCommand() *cobra.Command {
 				defer cancel()
 				result = errors.Join(result, receiver.Close(ctx))
 			}()
+			ui, descriptor, err := startUI(command.Context(), cfg, "run", receiver.Endpoint())
+			if err != nil {
+				return err
+			}
+			defer func() { result = errors.Join(result, closeUI(cfg, ui, descriptor)) }()
+			if _, err := fmt.Fprintln(command.ErrOrStderr(), "Tracelet UI:", ui.URL(), "(open with tracelet ui)"); err != nil {
+				return err
+			}
 			values, notices := supervisor.Env(os.Environ(), receiver.Endpoint(), cfg.Project.Name, override)
 			if _, err := fmt.Fprintln(command.ErrOrStderr(), "Tracelet receiver:", receiver.Endpoint()); err != nil {
 				return err

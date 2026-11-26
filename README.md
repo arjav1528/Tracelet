@@ -16,4 +16,6 @@ New authored commits must use **Arjav Patel <arjav1528@gmail.com>**, configured 
 
 ## Development
 
-Use the pinned Go toolchain, then run `make check` and `make build`. The current executable supports `./dist/tracelet version`, `init`, `run`, and help. See [configuration](docs/configuration.md) for safe defaults and overwrite behavior. Follow the [Go sample guide](docs/instrumentation-go.md) to capture real traces.
+Use the pinned Go toolchain, then run `make check` and `make build`. The current executable supports `./dist/tracelet version`, `init`, `run`, `ui`, `status`, and help. See [configuration](docs/configuration.md) for safe defaults and overwrite behavior. Follow the [Go sample guide](docs/instrumentation-go.md) to capture real traces.
+
+See [sessions and history](docs/sessions.md) for local ownership and browser discovery. The current history page is a placeholder while the explorer is built.

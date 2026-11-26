@@ -26,3 +26,9 @@ References: [OTel exporter module](https://github.com/open-telemetry/opentelemet
 - Schema 0 migration applies only to an empty database. Unrelated nonempty files and incomplete/current-but-incompatible schemas are rejected read-only, preserving original bytes in tests.
 - Incremental vacuum must be enabled before WAL/table creation. The driver probe confirmed that reversing the order leaves mode 0. Verified-empty prewritten files may receive one empty-database preparation; no nonempty unsupported database is rebuilt. Schema 1 requires reclamation mode 2.
 - Windows drive file URIs require a leading slash (`file:///C:/...`), verified with Go URL parsing; network/UNC database locations are rejected. Native Windows execution remains a release gate.
+
+## 2026-11-26 — T09 local discovery and API capability
+
+- Separate the public random instance identity from the private API nonce. Health checks validate the former and never send or return the latter. Require the private nonce on every data API request, including same-origin browser requests; this strengthens the original origin-only browser proposal without changing SDK protocol.
+- The explicit `ui` command opens/prints a fragment capability URL. Normal `run` logs and read-only `status` omit the capability. The browser will remove the fragment after retaining it per tab. Same-user malware with access to private descriptors remains outside the local threat model.
+- `run` binds both listeners before child startup; `ui` either connects to verified active ownership or keeps foreground history ownership until stopped. No ownership transfer, background daemon or PID-based killing is introduced.
