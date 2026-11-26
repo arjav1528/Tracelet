@@ -21,3 +21,12 @@ New databases migrate from an empty schema 0 to schema 1 transactionally. Unknow
 `internal/ingestion.Result` is the shared committed-ingestion result. Storage aliases it as `storage.IngestResult`, allowing the collector's narrow sink contract to depend on ingestion without a storage→ingestion→storage import cycle.
 
 Sanitization is shared by ingestion/persistence and later export. See [privacy](privacy.md). Trace hierarchy, query pagination, retention, process discovery, local API and UI are implemented in their owning tasks rather than represented by empty frameworks here.
+
+
+## Trace queries and hierarchy
+
+Trace lists use snapshot reads and bounded keyset pages (default50/max200). Search is a literal substring of any retained span name, with SQLite ASCII case folding; `%` and `_` have no wildcard meaning. Newest sorts by start descending, slowest by observed duration descending then start, and errors by error presence then start; trace ID breaks ties. Opaque cursors bind the query, limit, ordering and dataset revision. Ingestion or retention changes invalidate list pagination; callers restart after a revision-change response.
+
+A trace detail read returns the summary and first500 scalar timeline nodes, with an explicit next cursor. Node pages default500/max2000 and bind the trace revision. Complete span attributes/resource/scope/events/links are fetched only for the selected span in a separate snapshot. Timeline queries never decode full payloads. Exact times and revisions cross JSON as decimal strings.
+
+Tree assembly is iterative and keeps all nodes visible, including missing parents, multiple roots and cycles. A deterministic display edge breaks each cycle without changing stored IDs. Warnings cover missing root/parent, cycles and child intervals outside their parents. Missing-parent classification waits until all metadata pages for one revision have loaded. Trace duration is max(end) minus min(start), not a sum of child durations. Operation and primary service come from the earliest explicit root by start/ID, falling back to the earliest observed span; individual nodes retain their own service.

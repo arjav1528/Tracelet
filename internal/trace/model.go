@@ -39,10 +39,10 @@ type TreeWarning struct {
 }
 
 type TraceDetail struct {
-	Summary   TraceSummary  `json:"summary"`
-	Spans     []SpanSummary `json:"spans"`
-	Warnings  []TreeWarning `json:"warnings"`
-	Telemetry Telemetry     `json:"telemetry"`
+	NextCursor string        `json:"next_cursor,omitempty"`
+	Summary    TraceSummary  `json:"summary"`
+	Spans      []SpanSummary `json:"spans"`
+	Warnings   []TreeWarning `json:"warnings"`
 }
 
 // ProtoJSON preserves 64-bit integers and byte values at the browser boundary.
