@@ -1,0 +1,66 @@
+{
+  "recorded_at": "2026-11-26",
+  "scope": "synthetic storage-only experiment, not release benchmark",
+  "results": [
+    {
+      "arch": "arm64",
+      "attributes_per_span": 8,
+      "batch_commit_p95_ms": 0.774,
+      "batch_size": 100,
+      "connections": 1,
+      "disk_bytes_before_close": {
+        "db": 61554688,
+        "shm": 32768,
+        "wal": 4206552
+      },
+      "go": "go1.27.4",
+      "go_heap_alloc_bytes_after_ingest": 1216192,
+      "go_heap_sys_bytes_after_ingest": 11272192,
+      "go_total_alloc_delta_bytes": 316552776,
+      "ingest_seconds": 0.650717917,
+      "journal": "wal",
+      "layout": "protobuf",
+      "logical_cpus": 18,
+      "os": "darwin",
+      "payload_bytes": 39873488,
+      "query_samples": 100,
+      "query_warmups": 1,
+      "spans": 100000,
+      "spans_per_second": 153676.42013152066,
+      "spans_per_trace": 100,
+      "synchronous": "full",
+      "trace_list_p95_ms": 23.685292,
+      "closed_db_bytes": 63651840
+    },
+    {
+      "arch": "arm64",
+      "attributes_per_span": 8,
+      "batch_commit_p95_ms": 5.649625,
+      "batch_size": 100,
+      "connections": 1,
+      "disk_bytes_before_close": {
+        "db": 170938368,
+        "shm": 32768,
+        "wal": 4387832
+      },
+      "go": "go1.27.4",
+      "go_heap_alloc_bytes_after_ingest": 1453096,
+      "go_heap_sys_bytes_after_ingest": 11075584,
+      "go_total_alloc_delta_bytes": 628255968,
+      "ingest_seconds": 2.235041541,
+      "journal": "wal",
+      "layout": "normalized_attributes",
+      "logical_cpus": 18,
+      "os": "darwin",
+      "payload_bytes": 35073488,
+      "query_samples": 100,
+      "query_warmups": 1,
+      "spans": 100000,
+      "spans_per_second": 44741.897707752716,
+      "spans_per_trace": 100,
+      "synchronous": "full",
+      "trace_list_p95_ms": 20.521,
+      "closed_db_bytes": 173367296
+    }
+  ]
+}

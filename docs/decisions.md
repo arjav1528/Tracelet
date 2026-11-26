@@ -10,3 +10,12 @@
 - No frontend or ingestion capability is claimed by the version command. Those arrive in their owning tasks.
 
 References: [Go releases](https://go.dev/dl/), [Cobra release](https://github.com/spf13/cobra/releases/tag/v1.10.2), [checkout](https://github.com/actions/checkout/releases/tag/v7.0.1), [setup-go](https://github.com/actions/setup-go/releases/tag/v7.1.0).
+
+## 2026-11-26 — T02 storage and protocol
+
+- Real Go SDK gzip exports and fresh-process persistence passed using OpenTelemetry v1.47.0 and generated OTLP v1.11.1. Use official generated Protobuf decoding in-process; a bundled collector process is unnecessary for the current scope.
+- Select modernc SQLite v1.63.0 with its required libc v1.80.1, bounded scalar indexes plus Protobuf details, one writer, WAL and synchronous FULL as the production starting point. The synthetic comparison favored this representation for write cost and storage size; list-query latency was similar. This does not establish production NFR performance.
+- T03 configuration and T04 model work may be prepared in parallel with the isolated spike because neither depends on benchmark-selected schema details. Commits and task completion remain in plan order. Cost if a spike invalidates these independent contracts: revisit their uncommitted changes before accepting them.
+- Project YAML uses the maintained security-fix branch `go.yaml.in/yaml/v3` v3.0.6 with strict field decoding and domain validation. Its distribution contains Apache-2.0 and MIT-licensed portions. The parser dependency is prepared alongside the spike dependencies for the immediately following T03.
+
+References: [OTel exporter module](https://github.com/open-telemetry/opentelemetry-go/tree/v1.47.0/exporters/otlp/otlptrace/otlptracehttp), [OTLP generated types](https://github.com/open-telemetry/opentelemetry-proto-go/tree/v1.11.1), [SQLite driver](https://pkg.go.dev/modernc.org/sqlite), [YAML parser](https://github.com/yaml/go-yaml/tree/v3.0.6).
