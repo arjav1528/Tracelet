@@ -22,15 +22,10 @@ import (
 type IngestResult = ingestion.Result
 
 func (s *Store) Ingest(ctx context.Context, request *collectortracepb.ExportTraceServiceRequest) (IngestResult, error) {
-	select {
-	case s.writer <- struct{}{}:
-		defer func() { <-s.writer }()
-	case <-ctx.Done():
-		return IngestResult{}, ctx.Err()
-	}
-	if err := ctx.Err(); err != nil {
+	if err := s.acquireWriter(ctx); err != nil {
 		return IngestResult{}, err
 	}
+	defer s.releaseWriter()
 	if request == nil {
 		return IngestResult{}, errors.New("missing trace batch")
 	}
@@ -61,6 +56,10 @@ func (s *Store) Ingest(ctx context.Context, request *collectortracepb.ExportTrac
 	sanitized := proto.Clone(request).(*collectortracepb.ExportTraceServiceRequest)
 	if _, err := privacy.Sanitize(sanitized, privacy.Policy{Patterns: s.cfg.Privacy.RedactAttributeKeys}); err != nil {
 		return IngestResult{}, fmt.Errorf("sanitize trace batch: %w", err)
+	}
+	admissionErr := s.admit(ctx, sanitized, count)
+	if admissionErr != nil && !errors.Is(admissionErr, ErrStorageFull) {
+		return IngestResult{}, admissionErr
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -111,6 +110,9 @@ func (s *Store) Ingest(ctx context.Context, request *collectortracepb.ExportTrac
 				}
 				if !errors.Is(err, sql.ErrNoRows) {
 					return IngestResult{}, fmt.Errorf("check span identity: %w", err)
+				}
+				if admissionErr != nil {
+					return IngestResult{}, admissionErr
 				}
 				if _, err := tx.ExecContext(ctx, "INSERT INTO resources(resource_id,payload) VALUES(?,?) ON CONFLICT DO NOTHING", resourceID, resourcePayload); err != nil {
 					return IngestResult{}, fmt.Errorf("persist resource: %w", err)

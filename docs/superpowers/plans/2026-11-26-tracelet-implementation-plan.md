@@ -403,10 +403,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T06, T09, T10. **Files:** `internal/storage/retention.go`, retention tests, config/status callers, `docs/privacy.md`.
 
-- [ ] Implement incremental oldest-eligible whole-trace deletion, age/budget policies, active-trace quiet window, usage reporting, and writer-visible admission/backpressure on full storage.
-- [ ] Account for DB/WAL/sidecars and checkpoint/free-page behavior; expose when pruning happens. Document bounded budget overshoot and manual data deletion after shutdown.
-- [ ] Use a fake clock and temporary DB to assert age boundaries, oldest-before-newest, protected active traces, orphan metadata cleanup, byte accounting, retained newer data, full disk and no-eligible-data behavior.
-- [ ] Run `go test ./internal/storage ./internal/session`; commit: `feat(storage): enforce retention and report disk pressure`.
+- [x] Implement incremental oldest-eligible whole-trace deletion, age/budget policies, active-trace quiet window, usage reporting, and writer-visible admission/backpressure on full storage.
+- [x] Account for DB/WAL/sidecars and checkpoint/free-page behavior; expose when pruning happens. Document bounded budget overshoot and manual data deletion after shutdown.
+- [x] Use a fake clock and temporary DB to assert age boundaries, oldest-before-newest, protected active traces, orphan metadata cleanup, byte accounting, retained newer data, full disk and no-eligible-data behavior.
+- [x] Run `go test ./internal/storage ./internal/session`; commit: `feat(storage): enforce retention and report disk pressure`.
 
 **Done when:** old telemetry cannot consume disk indefinitely and storage pressure never silently loses acknowledged data.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T11 (integration)
-Last completed task: T10
+Current task: T12 (integration)
+Last completed task: T11
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C10 (see git log)
+Branch / HEAD: feat/tracelet-core / C11 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run and instrumented sample
 Verification run: session/server/CLI/trace/storage race+vet pass; stale descriptor, read-only status, browser fallback and history/run conflict verified; review found/fixed UI startup signal window
-Next action: wire T11 startup/minute retention and safe usage; finish T12 API
+Next action: complete protected T12 API and offline T13 explorer; later verify session provenance contract in schema migration
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T10 complete | Snapshot trace/span queries, revision-bound keyset pages and iterative honest hierarchy | Storage/trace race+vet pass; all sort ties/cursor binding, late parents, orphan/cycle/deep trees, exact payloads and scalar-only timeline tested | C10 (this commit) | T11; caller must gather one full revision before hierarchy warnings |
+| 2026-11-26 | T11 complete | Whole-trace age/budget pruning, physical sidecar accounting, admission pressure, startup/minute maintenance | Storage/session/collector race+vet pass; age/quiet boundaries, oldest-first, rollback, metadata/revision, duplicate retry, disk pressure/reclamation; CLI startup and injected periodic tick tests | C11 (this commit) | T12; visible API usage next, bounded overshoot documented |
+| 2026-11-26 | T10 complete | Snapshot trace/span queries, revision-bound keyset pages and iterative honest hierarchy | Storage/trace race+vet pass; all sort ties/cursor binding, late parents, orphan/cycle/deep trees, exact payloads and scalar-only timeline tested | cb49b7e | T11; caller must gather one full revision before hierarchy warnings |
 | 2026-11-26 | T09 complete | Private discovery descriptor, public identity health, minimal UI listener, foreground history, ui/status CLI | Session/server/CLI race+vet pass; stale/reused PID recovery, browser fallback, ownership conflict and cleanup; independent review fixed early signal handling | d86afdb | T10; UI placeholder until T13, Windows ACL/native behavior remains unverified |
 | 2026-11-26 | T08 complete | Child environment precedence, direct argv/output, bounded process-tree shutdown, run CLI and Go sample | Race tests pass; startup failure releases ownership; built sample captures 2 traces/8 spans and error status, Ctrl+C exit0/reopen; Windows/Linux supervisor crosscompile | defc49f | T09; native Windows/Linux lifecycle unverified |
 | 2026-11-26 | T07 complete | Binary OTLP/gzip receiver, bounded decode and pending memory, durable ACK, safe errors/partial success | Protocol and real SDK→SQLite tests pass; collector/ingestion race+vet pass; malformed and overloaded requests recover | f0c075d | T08; sustained load and cross-platform gates remain |

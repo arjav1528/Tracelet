@@ -50,6 +50,11 @@ func runCommand() *cobra.Command {
 				return err
 			}
 			defer func() { result = errors.Join(result, store.Close()) }()
+			stopMaintenance, err := startMaintenance(command.Context(), store, command.ErrOrStderr())
+			if err != nil {
+				return err
+			}
+			defer func() { result = errors.Join(result, stopMaintenance()) }()
 			receiver, err := collector.Start(cfg, store)
 			if err != nil {
 				return err

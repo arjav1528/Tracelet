@@ -22,9 +22,10 @@ const SchemaVersion = 1
 var initialSchema string
 
 type Store struct {
-	db     *sql.DB
-	cfg    config.Config
-	writer chan struct{}
+	db        *sql.DB
+	cfg       config.Config
+	writer    chan struct{}
+	retention retentionState
 }
 
 // Open requires the caller to hold the project ownership lock until Close returns.
@@ -38,6 +39,9 @@ func Open(ctx context.Context, cfg config.Config) (*Store, error) {
 	}
 	if cfg.Limits.MaxDecodedBytes <= 0 || cfg.Limits.MaxSpansPerBatch <= 0 {
 		return nil, errors.New("invalid storage ingestion limits")
+	}
+	if cfg.Storage.RetentionDays <= 0 || cfg.Storage.RetentionDays > 36500 || cfg.Storage.MaxSizeMB <= 0 || cfg.Storage.MaxSizeMB > 1<<40 {
+		return nil, errors.New("invalid storage retention policy")
 	}
 	if info, err := os.Lstat(cfg.Storage.Path); err == nil {
 		if !info.Mode().IsRegular() {

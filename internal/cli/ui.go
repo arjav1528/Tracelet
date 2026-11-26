@@ -108,6 +108,11 @@ func uiCommand(open func(string) error) *cobra.Command {
 				return err
 			}
 			defer func() { result = errors.Join(result, store.Close()) }()
+			stopMaintenance, err := startMaintenance(command.Context(), store, command.ErrOrStderr())
+			if err != nil {
+				return err
+			}
+			defer func() { result = errors.Join(result, stopMaintenance()) }()
 			ui, d, err := startUI(command.Context(), cfg, "history", "")
 			if err != nil {
 				return err
