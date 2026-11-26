@@ -3,10 +3,10 @@ package collector
 import (
 	"errors"
 
+	"github.com/arjav1528/Tracelet/internal/ingestion"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"tracelet.local/tracelet/internal/ingestion"
 )
 
 var errMalformedProtobuf = errors.New("malformed telemetry Protobuf")

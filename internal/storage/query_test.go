@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/arjav1528/Tracelet/internal/trace"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	tracepb "go.opentelemetry.io/proto/otlp/trace/v1"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/trace"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 func queryFixture(id uint64, name string, start, duration uint64, failed bool) *collectortracepb.ExportTraceServiceRequest {

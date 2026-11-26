@@ -12,7 +12,7 @@ Start with the **[complete implementation plan and agent handoff](docs/superpowe
 
 The source documents contain proposals and illustrative completion checkboxes; they are not evidence that features exist. The handoff resolves differences between them and records remaining decisions.
 
-New authored commits must use **Arjav Patel <arjav1528@gmail.com>**, configured locally for this repository. Local Git is initialized with the requested identity. Implementation progress and verification are recorded in the handoff. No GitHub remote has been created. GitHub owner, visibility, license, and release targets remain decisions for implementation.
+New authored commits must use **Arjav Patel <arjav1528@gmail.com>**, configured locally for this repository. Local Git is initialized with the requested identity. Implementation progress and verification are recorded in the handoff. The public repository is [arjav1528/Tracelet](https://github.com/arjav1528/Tracelet). The maintainer has authorized pushing completed work there. The project license remains undecided; no license file has been added.
 
 ## Development
 

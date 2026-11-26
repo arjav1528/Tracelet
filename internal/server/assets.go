@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	webassets "tracelet.local/tracelet/web"
+	webassets "github.com/arjav1528/Tracelet/web"
 )
 
 func serveAsset(w http.ResponseWriter, request *http.Request) {

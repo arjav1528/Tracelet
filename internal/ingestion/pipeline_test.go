@@ -6,8 +6,8 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 type sinkFunc func(context.Context, *collectortracepb.ExportTraceServiceRequest) (Result, error)

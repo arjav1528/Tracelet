@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/arjav1528/Tracelet/internal/config"
 	_ "modernc.org/sqlite"
-	"tracelet.local/tracelet/internal/config"
 )
 
 const SchemaVersion = 1

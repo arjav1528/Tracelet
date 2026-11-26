@@ -13,13 +13,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/ingestion"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	tracepb "go.opentelemetry.io/proto/otlp/trace/v1"
 	codepb "google.golang.org/genproto/googleapis/rpc/code"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/ingestion"
 )
 
 type Stats struct {

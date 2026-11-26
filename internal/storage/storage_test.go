@@ -14,14 +14,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/privacy"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	commonpb "go.opentelemetry.io/proto/otlp/common/v1"
 	tracepb "go.opentelemetry.io/proto/otlp/trace/v1"
 	"google.golang.org/protobuf/proto"
 	_ "modernc.org/sqlite"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/privacy"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 func testConfig(t *testing.T) config.Config {

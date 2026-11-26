@@ -19,13 +19,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/arjav1528/Tracelet/internal/collector"
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/session"
+	"github.com/arjav1528/Tracelet/internal/storage"
+	"github.com/arjav1528/Tracelet/internal/trace"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
-	"tracelet.local/tracelet/internal/collector"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/session"
-	"tracelet.local/tracelet/internal/storage"
-	"tracelet.local/tracelet/internal/trace"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 var updateAPIFixtures = flag.Bool("update-api-fixtures", false, "rewrite synthetic API response fixtures")

@@ -5,11 +5,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	commonpb "go.opentelemetry.io/proto/otlp/common/v1"
 	tracepb "go.opentelemetry.io/proto/otlp/trace/v1"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 func textAttribute(key, value string) *commonpb.KeyValue {

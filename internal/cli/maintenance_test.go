@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"tracelet.local/tracelet/internal/storage"
-	"tracelet.local/tracelet/testdata/fixtures"
+	"github.com/arjav1528/Tracelet/internal/storage"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 )
 
 func TestMaintenancePrunesAtStartupAndStops(t *testing.T) {

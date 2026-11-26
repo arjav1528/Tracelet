@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/arjav1528/Tracelet/internal/config"
 	"github.com/spf13/cobra"
-	"tracelet.local/tracelet/internal/config"
 )
 
 func initCommand() *cobra.Command {

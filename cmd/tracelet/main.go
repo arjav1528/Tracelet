@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"tracelet.local/tracelet/internal/cli"
+	"github.com/arjav1528/Tracelet/internal/cli"
 )
 
 var version = "dev"

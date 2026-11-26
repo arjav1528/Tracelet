@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	commonpb "go.opentelemetry.io/proto/otlp/common/v1"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 func retainFixture(t *testing.T, s *Store, id byte, lastSeen time.Time, copies int) *collectortracepb.ExportTraceServiceRequest {

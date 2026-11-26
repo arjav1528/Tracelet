@@ -7,11 +7,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/arjav1528/Tracelet/internal/collector"
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/storage"
+	"github.com/arjav1528/Tracelet/internal/supervisor"
 	"github.com/spf13/cobra"
-	"tracelet.local/tracelet/internal/collector"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/storage"
-	"tracelet.local/tracelet/internal/supervisor"
 )
 
 type ExitError struct {

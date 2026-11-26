@@ -704,8 +704,8 @@ Each row is a separate potential issue. Its exit gate defines what the eventual 
 
 | ID | Choice | Default / next action | Blocks |
 |---|---|---|---|
-| D01 | GitHub owner/repo/visibility | Ask only when needed for remote creation; local private work can start | Remote creation/push; canonical published module path |
-| D02 | License | Apache-2.0 proposal; maintainer chooses; inspect dependency obligations | Public publication/contributions |
+| D01 | GitHub owner/repo/visibility | Resolved2026-11-26: public arjav1528/Tracelet, maintainer created remote and authorized pushing all work | None for source push; module is github.com/arjav1528/Tracelet |
+| D02 | License | Maintainer explicitly leaves undecided2026-11-26; add no license by assumption | Licensed release/contribution policy; source push explicitly authorized |
 | D03 | Name/namespace | Tracelet working name; check repository/package/domain and relevant naming conflicts before announcement | Branding/package publication; no legal availability claim is made here |
 | D04 | Toolchain/receiver/SQLite/schema/WAL | Validate and pin in T01/T02/T06 | Freezing implementation/storage contract |
 | D05 | Configuration/limits/retention | Proposed §3 values; validate in spike/benchmarks and version changes | Config v1/alpha promise |
@@ -752,13 +752,13 @@ Last updated: 2026-11-26
 Current milestone: M3 (in progress); M0–M2 complete
 Current task: T14 (implementation)
 Last completed task: T13
-Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C13 (see git log)
+Repository/remote: public git@github.com:arjav1528/Tracelet.git; source push authorized
+Branch / HEAD: feat/tracelet-core / R01 repository setup (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run/sample, private sessions/history, retention, query and protected API
 Verification run: UI17 tests/typecheck/lint/build pass on pinned Node; server/CLI race pass; actual embedded binary served3 sample traces/13 spans, summary/search/no-results/recovery verified at1280px and390px, no browser errors
 Next action: T14 waterfall then T15 span inspection; T16 source/T17 export/T18 diagnostics prepared in parallel; retain session provenance migration follow-up
-External decisions pending: GitHub owner/name/visibility, license, account email association
+External decisions pending: license explicitly undecided; release/signing decisions remain; requested commit identity unchanged
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
 ```
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T13 complete | Embedded React trace list, protected API client, exact summaries, status/settings/search/paging and offline assets/build CI | UI17 tests/typecheck/lint/build pass; server/CLI race pass; real sample UI at1280/390 widths, search recovery, removed token fragment, no browser errors; no dev server/CDN | C13 (this commit) | T14; browser-wide blocked-external-network proof remains T19 |
+| 2026-11-26 | R01 repository setup | User confirmed public GitHub target and authorized all source pushes; canonical module/imports updated | Empty remote verified; Go checks after import rename; completed baseline prepared for main/feature push | R01 (this commit) | ContinueT14; license explicitly left undecided |
+| 2026-11-26 | T13 complete | Embedded React trace list, protected API client, exact summaries, status/settings/search/paging and offline assets/build CI | UI17 tests/typecheck/lint/build pass; server/CLI race pass; real sample UI at1280/390 widths, search recovery, removed token fragment, no browser errors; no dev server/CDN | 190660f | T14; browser-wide blocked-external-network proof remains T19 |
 | 2026-11-26 | T12 complete | Protected status/list/timeline/detail API, bounded reads, safe errors and golden fixtures | Full make check pass; API/CLI/storage race pass; token/origin/Host, revisions, SQL-like search, timeout/not-found, retention race and response cap tested | f485d19 | T13; public page remains placeholder until bundled UI lands |
 | 2026-11-26 | T11 complete | Whole-trace age/budget pruning, physical sidecar accounting, admission pressure, startup/minute maintenance | Storage/session/collector race+vet pass; age/quiet boundaries, oldest-first, rollback, metadata/revision, duplicate retry, disk pressure/reclamation; CLI startup and injected periodic tick tests | 6395d71 | T12; visible API usage next, bounded overshoot documented |
 | 2026-11-26 | T10 complete | Snapshot trace/span queries, revision-bound keyset pages and iterative honest hierarchy | Storage/trace race+vet pass; all sort ties/cursor binding, late parents, orphan/cycle/deep trees, exact payloads and scalar-only timeline tested | cb49b7e | T11; caller must gather one full revision before hierarchy warnings |

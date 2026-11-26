@@ -12,13 +12,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/ingestion"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	tracepb "go.opentelemetry.io/proto/otlp/trace/v1"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/ingestion"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 type sinkFunc func(context.Context, *collectortracepb.ExportTraceServiceRequest) (ingestion.Result, error)

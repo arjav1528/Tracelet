@@ -14,10 +14,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/arjav1528/Tracelet/internal/trace"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	tracepb "go.opentelemetry.io/proto/otlp/trace/v1"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/trace"
 )
 
 var ErrNotFound = errors.New("trace or span not found")

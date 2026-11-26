@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/session"
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/session"
 )
 
 func fixture(t *testing.T) (config.Config, session.Descriptor) {

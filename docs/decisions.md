@@ -42,3 +42,10 @@ References: [OTel exporter module](https://github.com/open-telemetry/opentelemet
 - Private data remains API-only. Static assets contain no instance secret. CSP allows scripts/styles/connects from self, with inline style attributes solely for generated timeline geometry; no inline scripts or telemetry HTML.
 
 References: [Node 26.13.1 release](https://nodejs.org/en/blog/release/v26.13.1), [setup-node 7.1.0 source](https://github.com/actions/setup-node/commit/949feb2413d6458794dcd2491c4babbbce0c15c1), [React](https://react.dev/), [Vite](https://vite.dev/guide/), [Vitest](https://vitest.dev/guide/).
+
+
+## 2026-11-26 — GitHub repository confirmed
+
+- The maintainer created public `git@github.com:arjav1528/Tracelet.git` and explicitly requested all work be pushed there. The empty remote was verified before configuration.
+- Replace the temporary local module with `github.com/arjav1528/Tracelet`, updating imports without including unfinished feature work in this repository setup commit. Bootstrap `main` with the completed T00–T13 baseline; continue task commits on `feat/tracelet-core` for review and push that branch as it advances.
+- The maintainer chose to leave the license undecided. Do not add a license or treat the earlier Apache-2.0 proposal as accepted. This does not block the explicitly authorized source push; a licensed release remains pending.

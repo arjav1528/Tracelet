@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"tracelet.local/tracelet/internal/session"
+	"github.com/arjav1528/Tracelet/internal/session"
 )
 
 func helper(mode string) ([]string, []string) {

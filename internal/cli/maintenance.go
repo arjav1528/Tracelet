@@ -6,7 +6,7 @@ import (
 	"io"
 	"time"
 
-	"tracelet.local/tracelet/internal/storage"
+	"github.com/arjav1528/Tracelet/internal/storage"
 )
 
 func startMaintenance(ctx context.Context, store *storage.Store, output io.Writer) (func() error, error) {

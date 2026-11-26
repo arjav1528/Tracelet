@@ -12,8 +12,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/arjav1528/Tracelet/internal/privacy"
 	"go.yaml.in/yaml/v3"
-	"tracelet.local/tracelet/internal/privacy"
 )
 
 type Config struct {

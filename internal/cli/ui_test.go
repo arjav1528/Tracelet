@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/session"
 	"go.yaml.in/yaml/v3"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/session"
 )
 
 func sessionConfig(t *testing.T) (string, config.Config) {

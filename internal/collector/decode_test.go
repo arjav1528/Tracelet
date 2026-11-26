@@ -4,11 +4,11 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/arjav1528/Tracelet/internal/ingestion"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/ingestion"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 func TestDecodePreflightPreservesUnknownFieldsAndBoundsGroups(t *testing.T) {

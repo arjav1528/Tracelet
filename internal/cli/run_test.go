@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/arjav1528/Tracelet/internal/session"
 	"net"
 	"net/http"
 	"os"
@@ -14,14 +15,13 @@ import (
 	"syscall"
 	"testing"
 	"time"
-	"tracelet.local/tracelet/internal/session"
 
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.yaml.in/yaml/v3"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 func TestRunCommandCapturesAndPreservesExit(t *testing.T) {

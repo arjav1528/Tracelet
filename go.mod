@@ -1,4 +1,4 @@
-module tracelet.local/tracelet
+module github.com/arjav1528/Tracelet
 
 go 1.27.0
 

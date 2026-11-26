@@ -6,10 +6,10 @@ import (
 	"io"
 	"testing"
 
+	"github.com/arjav1528/Tracelet/internal/ingestion"
+	"github.com/arjav1528/Tracelet/testdata/fixtures"
 	collectortracepb "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/ingestion"
-	"tracelet.local/tracelet/testdata/fixtures"
 )
 
 func TestSyntheticTraceFixtures(t *testing.T) {

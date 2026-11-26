@@ -11,9 +11,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"tracelet.local/tracelet/internal/collector"
-	"tracelet.local/tracelet/internal/storage"
-	"tracelet.local/tracelet/internal/trace"
+	"github.com/arjav1528/Tracelet/internal/collector"
+	"github.com/arjav1528/Tracelet/internal/storage"
+	"github.com/arjav1528/Tracelet/internal/trace"
 )
 
 const maxAPIResponseBytes = 32 << 20

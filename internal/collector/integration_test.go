@@ -7,6 +7,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/arjav1528/Tracelet/internal/privacy"
+	"github.com/arjav1528/Tracelet/internal/session"
+	"github.com/arjav1528/Tracelet/internal/storage"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -14,9 +17,6 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	tracepb "go.opentelemetry.io/proto/otlp/trace/v1"
 	"google.golang.org/protobuf/proto"
-	"tracelet.local/tracelet/internal/privacy"
-	"tracelet.local/tracelet/internal/session"
-	"tracelet.local/tracelet/internal/storage"
 )
 
 func TestPinnedSDKPersistsRedactedTraceBeforeShutdown(t *testing.T) {

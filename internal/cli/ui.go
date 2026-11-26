@@ -11,12 +11,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/arjav1528/Tracelet/internal/collector"
+	"github.com/arjav1528/Tracelet/internal/config"
+	"github.com/arjav1528/Tracelet/internal/server"
+	"github.com/arjav1528/Tracelet/internal/session"
+	"github.com/arjav1528/Tracelet/internal/storage"
 	"github.com/spf13/cobra"
-	"tracelet.local/tracelet/internal/collector"
-	"tracelet.local/tracelet/internal/config"
-	"tracelet.local/tracelet/internal/server"
-	"tracelet.local/tracelet/internal/session"
-	"tracelet.local/tracelet/internal/storage"
 )
 
 func descriptorPath(cfg config.Config) string { return cfg.Storage.Path + ".session.json" }
