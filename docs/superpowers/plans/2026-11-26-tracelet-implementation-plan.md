@@ -436,10 +436,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T10, T13. **Files:** `web/src/components/Waterfall.tsx`, trace feature files, layout tests, large fixture.
 
-- [ ] Implement hierarchical rows, timeline scale, exact relative offsets, collapse/expand, fit/zoom, selected row and keyboard navigation. Use virtualization/progressive rendering for large traces.
-- [ ] Label roots/orphans/cycles/time-skew warnings; show errors using text/icons as well as color. Zero-duration spans remain selectable; no negative widths.
-- [ ] Assert deterministic layout for overlapping children, multi-root traces, orphan/late/cyclic inputs and very large absolute timestamps. Test collapsed-row focus and 2,000+ spans without losing selection.
-- [ ] Run UI tests/typecheck/build and inspect narrow/wide browser layouts. Commit: `feat(web): render accessible hierarchical trace waterfalls`.
+- [x] Implement hierarchical rows, timeline scale, exact relative offsets, collapse/expand, fit/zoom, selected row and keyboard navigation. Use virtualization/progressive rendering for large traces.
+- [x] Label roots/orphans/cycles/time-skew warnings; show errors using text/icons as well as color. Zero-duration spans remain selectable; no negative widths.
+- [x] Assert deterministic layout for overlapping children, multi-root traces, orphan/late/cyclic inputs and very large absolute timestamps. Test collapsed-row focus and 2,000+ spans without losing selection.
+- [x] Run UI tests/typecheck/build and inspect narrow/wide browser layouts. Commit: `feat(web): render accessible hierarchical trace waterfalls`.
 
 **Done when:** a developer can identify the deliberately slow operation without timing or hierarchy distortion.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M3 (in progress); M0–M2 complete
-Current task: T14 (implementation)
-Last completed task: T13
+Current task: T15 (implementation)
+Last completed task: T14
 Repository/remote: public git@github.com:arjav1528/Tracelet.git; source push authorized
-Branch / HEAD: feat/tracelet-core / R01 repository setup (see git log)
+Branch / HEAD: feat/tracelet-core / C14 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run/sample, private sessions/history, retention, query and protected API
 Verification run: UI17 tests/typecheck/lint/build pass on pinned Node; server/CLI race pass; actual embedded binary served3 sample traces/13 spans, summary/search/no-results/recovery verified at1280px and390px, no browser errors
-Next action: T14 waterfall then T15 span inspection; T16 source/T17 export/T18 diagnostics prepared in parallel; retain session provenance migration follow-up
+Next action: T15 span inspection; integrate prepared T16 source/T17 export/T18 diagnostics; T19 real workflow and T20 provenance/crash hardening prepared in parallel
 External decisions pending: license explicitly undecided; release/signing decisions remain; requested commit identity unchanged
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | R01 repository setup | User confirmed public GitHub target and authorized all source pushes; canonical module/imports updated | Empty remote verified; Go checks after import rename; completed baseline prepared for main/feature push | R01 (this commit) | ContinueT14; license explicitly left undecided |
+| 2026-11-26 | T14 complete | Revision-consistent timeline loading, iterative hierarchy, exact virtualized waterfall and keyboard controls | UI34 tests/typecheck/lint/build pass; packaged real sample slow span visually verified;2,001 spans loaded with22 DOM rows, End/Enter last-span selection and Home/Left collapse recovery at1280/390 widths; no browser errors | C14 (this commit) | T15; quantitative render/throughput targets remain T21 |
+| 2026-11-26 | R01 repository setup | User confirmed public GitHub target and authorized all source pushes; canonical module/imports updated | Empty remote verified; Go checks after import rename; completed baseline prepared for main/feature push | 0095445 | ContinueT14; license explicitly left undecided |
 | 2026-11-26 | T13 complete | Embedded React trace list, protected API client, exact summaries, status/settings/search/paging and offline assets/build CI | UI17 tests/typecheck/lint/build pass; server/CLI race pass; real sample UI at1280/390 widths, search recovery, removed token fragment, no browser errors; no dev server/CDN | 190660f | T14; browser-wide blocked-external-network proof remains T19 |
 | 2026-11-26 | T12 complete | Protected status/list/timeline/detail API, bounded reads, safe errors and golden fixtures | Full make check pass; API/CLI/storage race pass; token/origin/Host, revisions, SQL-like search, timeout/not-found, retention race and response cap tested | f485d19 | T13; public page remains placeholder until bundled UI lands |
 | 2026-11-26 | T11 complete | Whole-trace age/budget pruning, physical sidecar accounting, admission pressure, startup/minute maintenance | Storage/session/collector race+vet pass; age/quiet boundaries, oldest-first, rollback, metadata/revision, duplicate retry, disk pressure/reclamation; CLI startup and injected periodic tick tests | 6395d71 | T12; visible API usage next, bounded overshoot documented |

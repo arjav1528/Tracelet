@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { APIError, apiGet } from "./api";
+import { TraceView } from "./features/traces/TraceView";
 import { bytes, duration, exactUTC, localTime } from "./format";
 import type { Status, TracePage, TraceSummary } from "./types";
 
@@ -124,69 +125,6 @@ function Settings({ status }: { status: Status }) {
   );
 }
 
-function TraceSelection({
-  selected,
-  close,
-}: {
-  selected: TraceSummary;
-  close: () => void;
-}) {
-  const [copied, setCopied] = useState("");
-  useEffect(() => setCopied(""), [selected.trace_id]);
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(selected.trace_id);
-      setCopied("Trace ID copied.");
-    } catch {
-      setCopied("Copy unavailable. Select the trace ID below to copy it.");
-    }
-  }
-  return (
-    <section className="selection" aria-labelledby="selection-heading">
-      <div className="section-heading">
-        <h2 id="selection-heading">Trace summary</h2>
-        <button className="quiet-button" onClick={close}>
-          Close summary
-        </button>
-      </div>
-      <h3>{selected.operation || "Unnamed operation"}</h3>
-      <dl className="selection-grid">
-        <div className="wide">
-          <dt>Trace ID</dt>
-          <dd className="trace-id">
-            {selected.trace_id}
-            <button className="quiet-button" onClick={copy}>
-              Copy ID
-            </button>
-          </dd>
-        </div>
-        <div>
-          <dt>Service</dt>
-          <dd>{selected.service_name || "Not provided"}</dd>
-        </div>
-        <div>
-          <dt>Duration</dt>
-          <dd>{duration(selected.duration_nano)}</dd>
-        </div>
-        <div>
-          <dt>Start in UTC</dt>
-          <dd>{exactUTC(selected.start_time_unix_nano)}</dd>
-        </div>
-        <div>
-          <dt>Observed spans</dt>
-          <dd>{selected.span_count.toLocaleString()}</dd>
-        </div>
-      </dl>
-      <p className="quiet">
-        Trace bounds reflect received spans; additional spans may arrive later.
-      </p>
-      <p role="status" className="quiet">
-        {copied}
-      </p>
-    </section>
-  );
-}
-
 export function App({ token }: { token: string }) {
   const [status, setStatus] = useState<Status | null>(null);
   const [statusError, setStatusError] = useState(false);
@@ -203,6 +141,8 @@ export function App({ token }: { token: string }) {
   const [notice, setNotice] = useState("");
   const [selected, setSelected] = useState<TraceSummary | null>(null);
   const [searchError, setSearchError] = useState("");
+  const onUnauthorized = useCallback(() => setExpired(true), []);
+  const traceButtons = useRef(new Map<string, HTMLButtonElement>());
 
   useEffect(() => {
     if (!token || expired) return;
@@ -555,6 +495,11 @@ export function App({ token }: { token: string }) {
                         <td>
                           <button
                             className="operation"
+                            ref={(element) => {
+                              if (element)
+                                traceButtons.current.set(row.trace_id, element);
+                              else traceButtons.current.delete(row.trace_id);
+                            }}
                             aria-label={`View summary for ${row.operation || "Unnamed operation"}`}
                             aria-pressed={selected?.trace_id === row.trace_id}
                             onClick={() => setSelected(row)}
@@ -627,7 +572,19 @@ export function App({ token }: { token: string }) {
           </div>
         </section>
         {selected && (
-          <TraceSelection selected={selected} close={() => setSelected(null)} />
+          <TraceView
+            key={selected.trace_id}
+            selected={selected}
+            token={token}
+            close={() => {
+              const id = selected.trace_id;
+              setSelected(null);
+              requestAnimationFrame(() =>
+                traceButtons.current.get(id)?.focus(),
+              );
+            }}
+            onUnauthorized={onUnauthorized}
+          />
         )}
         {status && <Settings status={status} />}
         <footer>

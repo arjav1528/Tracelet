@@ -77,6 +77,10 @@ describe("local trace list", () => {
     ).toBeTruthy();
     expect(screen.getByText("2026-11-26T07:56:20.123456789Z")).toBeTruthy();
     expect(screen.getByText(summary.trace_id)).toBeTruthy();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Close summary" }),
+    );
+    await waitFor(() => expect(document.activeElement).toBe(row));
   });
   it("renders malicious names as plain text", async () => {
     const name = '<img src=x onerror="alert(1)">';

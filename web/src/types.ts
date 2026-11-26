@@ -16,6 +16,34 @@ export type TracePage = {
   next_cursor?: string;
 };
 
+export type SpanSummary = {
+  trace_id: string;
+  span_id: string;
+  parent_span_id?: string;
+  name: string;
+  service_name: string;
+  start_time_unix_nano: string;
+  end_time_unix_nano: string;
+  duration_nano: string;
+  kind: number;
+  status: number;
+};
+
+export type TreeWarning = { code: string; span_id?: string; message: string };
+export type TraceDetail = {
+  summary: TraceSummary;
+  spans: SpanSummary[];
+  warnings: TreeWarning[];
+  next_cursor?: string;
+};
+export type SpanPage = {
+  trace_id: string;
+  spans: SpanSummary[];
+  revision: string;
+  span_count: number;
+  next_cursor?: string;
+};
+
 export type Status = {
   project: { id: string; name: string };
   session: { role: "run" | "history"; instance_id: string };
