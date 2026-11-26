@@ -35,7 +35,7 @@ func fixture(t *testing.T) (config.Config, session.Descriptor) {
 func startTest(t *testing.T) (*Server, session.Descriptor) {
 	t.Helper()
 	cfg, d := fixture(t)
-	s, err := Start(cfg, d)
+	s, err := Start(cfg, d, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -212,7 +212,7 @@ func TestListenerHeldAndClose(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if duplicate, err := Start(cfg, d); err == nil {
+	if duplicate, err := Start(cfg, d, nil, nil); err == nil {
 		duplicate.Close(context.Background())
 		t.Fatal("second server took occupied port")
 	}
@@ -246,7 +246,7 @@ func TestStartRejectsUnsafeConfiguration(t *testing.T) {
 			case "instance":
 				d.InstanceID = "invalid"
 			}
-			if s, err := Start(cfg, d); err == nil {
+			if s, err := Start(cfg, d, nil, nil); err == nil {
 				s.Close(context.Background())
 				t.Fatal("accepted unsafe server configuration")
 			}

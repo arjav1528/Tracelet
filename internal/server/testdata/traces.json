@@ -1,0 +1,16 @@
+{
+  "revision": "1",
+  "traces": [
+    {
+      "duration_nano": "999900",
+      "end_time_unix_nano": "1795679780124456789",
+      "has_error": false,
+      "operation": "GET /synthetic",
+      "revision": "1",
+      "service_name": "synthetic-api",
+      "span_count": 3,
+      "start_time_unix_nano": "1795679780123456889",
+      "trace_id": "00000000000000000000000000000001"
+    }
+  ]
+}

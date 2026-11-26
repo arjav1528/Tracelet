@@ -1,0 +1,51 @@
+{
+  "spans": [
+    {
+      "duration_nano": "999900",
+      "end_time_unix_nano": "1795679780124456789",
+      "kind": 2,
+      "name": "GET /synthetic",
+      "service_name": "synthetic-api",
+      "span_id": "0000000000000001",
+      "start_time_unix_nano": "1795679780123456889",
+      "status": 0,
+      "trace_id": "00000000000000000000000000000001"
+    },
+    {
+      "duration_nano": "50",
+      "end_time_unix_nano": "1795679780123457039",
+      "kind": 1,
+      "name": "synthetic operation",
+      "parent_span_id": "0000000000000001",
+      "service_name": "synthetic-api",
+      "span_id": "0000000000000002",
+      "start_time_unix_nano": "1795679780123456989",
+      "status": 0,
+      "trace_id": "00000000000000000000000000000001"
+    },
+    {
+      "duration_nano": "50",
+      "end_time_unix_nano": "1795679780123457139",
+      "kind": 1,
+      "name": "synthetic operation",
+      "parent_span_id": "0000000000000001",
+      "service_name": "synthetic-api",
+      "span_id": "0000000000000003",
+      "start_time_unix_nano": "1795679780123457089",
+      "status": 0,
+      "trace_id": "00000000000000000000000000000001"
+    }
+  ],
+  "summary": {
+    "duration_nano": "999900",
+    "end_time_unix_nano": "1795679780124456789",
+    "has_error": false,
+    "operation": "GET /synthetic",
+    "revision": "1",
+    "service_name": "synthetic-api",
+    "span_count": 3,
+    "start_time_unix_nano": "1795679780123456889",
+    "trace_id": "00000000000000000000000000000001"
+  },
+  "warnings": []
+}

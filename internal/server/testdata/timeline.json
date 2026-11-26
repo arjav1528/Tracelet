@@ -1,0 +1,19 @@
+{
+  "next_cursor": "eyJ2IjoxLCJraW5kIjoic3BhbnMiLCJsaW1pdCI6MSwicmV2aXNpb24iOjEsInRyYWNlX2lkIjoiMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDEiLCJwcmltYXJ5IjoxNzk1Njc5NzgwMTIzNDU2ODg5LCJpZCI6IjAwMDAwMDAwMDAwMDAwMDEifQ",
+  "revision": "1",
+  "span_count": 3,
+  "spans": [
+    {
+      "duration_nano": "999900",
+      "end_time_unix_nano": "1795679780124456789",
+      "kind": 2,
+      "name": "GET /synthetic",
+      "service_name": "synthetic-api",
+      "span_id": "0000000000000001",
+      "start_time_unix_nano": "1795679780123456889",
+      "status": 0,
+      "trace_id": "00000000000000000000000000000001"
+    }
+  ],
+  "trace_id": "00000000000000000000000000000001"
+}

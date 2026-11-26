@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "invalid_query",
+    "message": "request path or query is invalid"
+  }
+}

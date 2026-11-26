@@ -414,10 +414,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T09–T11. **Files:** `internal/server/`, API DTO definitions/tests, `docs/api.md`.
 
-- [ ] Implement §3 routes, exact time encoding, bounded pages/detail payloads, safe errors and status/settings snapshots. API export route may be connected in T17.
-- [ ] Add Host/Origin/fetch-metadata protections, safe content types/cache headers/CSP, request timeouts and SQL/query validation. Keep receiver traffic on its dedicated listener.
-- [ ] Test pagination/filter input, revision changes between node pages, missing trace/span, retention racing reads, wrong method, unsafe origin/Host, valid originless same-origin browser/nonce-authenticated CLI requests, oversized query input, SQL-like search text and no secret fields in status/errors.
-- [ ] Run `go test ./internal/server ./internal/storage`; publish representative response fixtures for frontend work. Commit: `feat(api): serve protected local trace queries and session status`.
+- [x] Implement §3 routes, exact time encoding, bounded pages/detail payloads, safe errors and status/settings snapshots. API export route may be connected in T17.
+- [x] Add Host/Origin/fetch-metadata protections, safe content types/cache headers/CSP, request timeouts and SQL/query validation. Keep receiver traffic on its dedicated listener.
+- [x] Test pagination/filter input, revision changes between node pages, missing trace/span, retention racing reads, wrong method, unsafe origin/Host, valid originless same-origin browser/nonce-authenticated CLI requests, oversized query input, SQL-like search text and no secret fields in status/errors.
+- [x] Run `go test ./internal/server ./internal/storage`; publish representative response fixtures for frontend work. Commit: `feat(api): serve protected local trace queries and session status`.
 
 **Done when:** a browser can read real traces from the correct local instance without cross-origin data exposure.
 
@@ -749,15 +749,15 @@ This state is a template to update during implementation. Do not replace evidenc
 
 ```markdown
 Last updated: 2026-11-26
-Current milestone: M1 (in progress)
-Current task: T12 (integration)
-Last completed task: T11
+Current milestone: M3 (in progress); M0–M2 complete
+Current task: T13 (implementation)
+Last completed task: T12
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C11 (see git log)
+Branch / HEAD: feat/tracelet-core / C12 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
-Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run and instrumented sample
-Verification run: session/server/CLI/trace/storage race+vet pass; stale descriptor, read-only status, browser fallback and history/run conflict verified; review found/fixed UI startup signal window
-Next action: complete protected T12 API and offline T13 explorer; later verify session provenance contract in schema migration
+Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run/sample, private sessions/history, retention, query and protected API
+Verification run: full make check passed; API/CLI/storage focused race checks pass; private-token/Host/Origin/query bounds and golden response contracts verified
+Next action: embed/verify T13 real trace list, then T14 waterfall; T16 source/T17 export preparation in parallel; retain session provenance migration follow-up
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T11 complete | Whole-trace age/budget pruning, physical sidecar accounting, admission pressure, startup/minute maintenance | Storage/session/collector race+vet pass; age/quiet boundaries, oldest-first, rollback, metadata/revision, duplicate retry, disk pressure/reclamation; CLI startup and injected periodic tick tests | C11 (this commit) | T12; visible API usage next, bounded overshoot documented |
+| 2026-11-26 | T12 complete | Protected status/list/timeline/detail API, bounded reads, safe errors and golden fixtures | Full make check pass; API/CLI/storage race pass; token/origin/Host, revisions, SQL-like search, timeout/not-found, retention race and response cap tested | C12 (this commit) | T13; public page remains placeholder until bundled UI lands |
+| 2026-11-26 | T11 complete | Whole-trace age/budget pruning, physical sidecar accounting, admission pressure, startup/minute maintenance | Storage/session/collector race+vet pass; age/quiet boundaries, oldest-first, rollback, metadata/revision, duplicate retry, disk pressure/reclamation; CLI startup and injected periodic tick tests | 6395d71 | T12; visible API usage next, bounded overshoot documented |
 | 2026-11-26 | T10 complete | Snapshot trace/span queries, revision-bound keyset pages and iterative honest hierarchy | Storage/trace race+vet pass; all sort ties/cursor binding, late parents, orphan/cycle/deep trees, exact payloads and scalar-only timeline tested | cb49b7e | T11; caller must gather one full revision before hierarchy warnings |
 | 2026-11-26 | T09 complete | Private discovery descriptor, public identity health, minimal UI listener, foreground history, ui/status CLI | Session/server/CLI race+vet pass; stale/reused PID recovery, browser fallback, ownership conflict and cleanup; independent review fixed early signal handling | d86afdb | T10; UI placeholder until T13, Windows ACL/native behavior remains unverified |
 | 2026-11-26 | T08 complete | Child environment precedence, direct argv/output, bounded process-tree shutdown, run CLI and Go sample | Race tests pass; startup failure releases ownership; built sample captures 2 traces/8 spans and error status, Ctrl+C exit0/reopen; Windows/Linux supervisor crosscompile | defc49f | T09; native Windows/Linux lifecycle unverified |

@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"tracelet.local/tracelet/internal/collector"
 	"tracelet.local/tracelet/internal/config"
 	"tracelet.local/tracelet/internal/server"
 	"tracelet.local/tracelet/internal/session"
@@ -42,13 +43,13 @@ func acquireProject(ctx context.Context, cfg config.Config) (*session.Lock, erro
 	return lock, err
 }
 
-func startUI(ctx context.Context, cfg config.Config, role, endpoint string) (*server.Server, session.Descriptor, error) {
+func startUI(ctx context.Context, cfg config.Config, role, endpoint string, store *storage.Store, receiver *collector.Receiver) (*server.Server, session.Descriptor, error) {
 	d, err := session.NewDescriptor(cfg.Project.ID, role)
 	if err != nil {
 		return nil, d, err
 	}
 	d.ReceiverEndpoint = endpoint
-	ui, err := server.Start(cfg, d)
+	ui, err := server.Start(cfg, d, store, receiver)
 	if err != nil {
 		return nil, d, err
 	}
@@ -113,7 +114,7 @@ func uiCommand(open func(string) error) *cobra.Command {
 				return err
 			}
 			defer func() { result = errors.Join(result, stopMaintenance()) }()
-			ui, d, err := startUI(command.Context(), cfg, "history", "")
+			ui, d, err := startUI(command.Context(), cfg, "history", "", store, nil)
 			if err != nil {
 				return err
 			}

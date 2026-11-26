@@ -65,7 +65,7 @@ func runCommand() *cobra.Command {
 				defer cancel()
 				result = errors.Join(result, receiver.Close(ctx))
 			}()
-			ui, descriptor, err := startUI(command.Context(), cfg, "run", receiver.Endpoint())
+			ui, descriptor, err := startUI(command.Context(), cfg, "run", receiver.Endpoint(), store, receiver)
 			if err != nil {
 				return err
 			}

@@ -12,8 +12,10 @@ import (
 	"strings"
 	"time"
 
+	"tracelet.local/tracelet/internal/collector"
 	"tracelet.local/tracelet/internal/config"
 	"tracelet.local/tracelet/internal/session"
+	"tracelet.local/tracelet/internal/storage"
 )
 
 type health struct {
@@ -23,15 +25,22 @@ type health struct {
 }
 
 type Server struct {
-	server   *http.Server
-	host     string
-	health   health
-	done     chan struct{}
-	serveErr error
+	server     *http.Server
+	host       string
+	health     health
+	done       chan struct{}
+	serveErr   error
+	config     config.Config
+	role       string
+	token      string
+	store      *storage.Store
+	receiver   *collector.Receiver
+	slots      chan struct{}
+	apiTimeout time.Duration
 }
 
 // Start binds and retains a loopback listener before returning its actual URL.
-func Start(cfg config.Config, d session.Descriptor) (*Server, error) {
+func Start(cfg config.Config, d session.Descriptor, store *storage.Store, receiver *collector.Receiver) (*Server, error) {
 	if cfg.UI.Bind != "127.0.0.1" || cfg.UI.Port < 0 || cfg.UI.Port > 65535 {
 		return nil, errors.New("UI requires a valid loopback endpoint")
 	}
@@ -44,6 +53,10 @@ func Start(cfg config.Config, d session.Descriptor) (*Server, error) {
 			return nil, errors.New("UI requires a valid public session identity")
 		}
 	}
+	nonce, err := hex.DecodeString(d.Nonce)
+	if err != nil || len(nonce) != 32 || d.Nonce != strings.ToLower(d.Nonce) || (d.Role != "history" && d.Role != "run") {
+		return nil, errors.New("UI requires a valid private session identity and role")
+	}
 	l := cfg.Limits
 	for _, seconds := range []int{l.ReadHeaderTimeoutSeconds, l.ReadTimeoutSeconds, l.WriteTimeoutSeconds, l.IdleTimeoutSeconds} {
 		if seconds <= 0 || seconds > 3600 {
@@ -54,7 +67,11 @@ func Start(cfg config.Config, d session.Descriptor) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &Server{host: listener.Addr().String(), health: health{Version: 1, ProjectID: d.ProjectID, InstanceID: d.InstanceID}, done: make(chan struct{})}
+	concurrency := 8
+	if cfg.Limits.MaxConcurrentRequests > 0 {
+		concurrency = min(concurrency, cfg.Limits.MaxConcurrentRequests)
+	}
+	s := &Server{host: listener.Addr().String(), health: health{Version: 1, ProjectID: d.ProjectID, InstanceID: d.InstanceID}, done: make(chan struct{}), config: cfg, role: d.Role, token: d.Nonce, store: store, receiver: receiver, slots: make(chan struct{}, concurrency), apiTimeout: time.Duration(min(10, l.WriteTimeoutSeconds)) * time.Second}
 	s.server = &http.Server{
 		Handler: s, ReadHeaderTimeout: time.Duration(l.ReadHeaderTimeoutSeconds) * time.Second,
 		ReadTimeout: time.Duration(l.ReadTimeoutSeconds) * time.Second, WriteTimeout: time.Duration(l.WriteTimeoutSeconds) * time.Second,
@@ -92,8 +109,17 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 	w.Header().Set("X-Frame-Options", "DENY")
 	w.Header().Set("Referrer-Policy", "no-referrer")
 	origins, sites := request.Header.Values("Origin"), request.Header.Values("Sec-Fetch-Site")
+	api := request.URL.Path == "/api/v1" || strings.HasPrefix(request.URL.Path, "/api/v1/")
 	if request.Host != s.host || len(origins) > 1 || (len(origins) == 1 && origins[0] != s.URL()) || len(sites) > 1 || (len(sites) == 1 && sites[0] != "same-origin" && sites[0] != "none") {
+		if api {
+			writeAPIError(w, http.StatusForbidden, "forbidden", "request must come from this local Tracelet instance")
+			return
+		}
 		http.Error(w, "request must come from this local Tracelet instance", http.StatusForbidden)
+		return
+	}
+	if api {
+		s.serveAPI(w, request)
 		return
 	}
 	if request.URL.Path != "/" && request.URL.Path != "/healthz" {
