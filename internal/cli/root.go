@@ -9,6 +9,6 @@ func NewRoot(version, commit string) *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
-	command.AddCommand(versionCommand(version, commit), initCommand())
+	command.AddCommand(versionCommand(version, commit), initCommand(), runCommand())
 	return command
 }

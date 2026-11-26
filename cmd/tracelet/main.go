@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -13,6 +14,10 @@ var commit = "unknown"
 func main() {
 	if err := cli.NewRoot(version, commit).Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, "tracelet:", err)
+		var child *cli.ExitError
+		if errors.As(err, &child) {
+			os.Exit(child.Code)
+		}
 		os.Exit(1)
 	}
 }

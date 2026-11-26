@@ -369,11 +369,11 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T03, T07. **Files:** `internal/cli/run.go`, `internal/supervisor/`, `examples/go-api/`, environment/lifecycle tests.
 
-- [ ] Acquire the T06 project lock and start storage/receiver before child; implement the exact environment precedence and explicit `--override-otel` behavior in §3. Respect argument boundaries and stream stdout/stderr.
-- [ ] Implement platform-specific process-tree termination, grace period, final ingest drain, exit-code mapping, and cleanup on partial startup failure.
-- [ ] Add local instrumented Go API and downstream server: HTTP root, custom nested slow/error spans, event, explicit source metadata, and bounded SDK shutdown.
-- [ ] Test endpoint/protocol precedence matrix, service-name preservation, executable-not-found, child exit 0/nonzero, startup failure, interrupt, descendants, repeat interrupt, and final span emitted during shutdown.
-- [ ] Run `go test ./internal/supervisor ./internal/cli` and sample-through-receiver smoke. Commit: `feat(cli): supervise instrumented applications and flush on shutdown`.
+- [x] Acquire the T06 project lock and start storage/receiver before child; implement the exact environment precedence and explicit `--override-otel` behavior in §3. Respect argument boundaries and stream stdout/stderr.
+- [x] Implement platform-specific process-tree termination, grace period, final ingest drain, exit-code mapping, and cleanup on partial startup failure.
+- [x] Add local instrumented Go API and downstream server: HTTP root, custom nested slow/error spans, event, explicit source metadata, and bounded SDK shutdown.
+- [x] Test endpoint/protocol precedence matrix, service-name preservation, executable-not-found, child exit 0/nonzero, startup failure, interrupt, descendants, repeat interrupt, and final span emitted during shutdown.
+- [x] Run `go test ./internal/supervisor ./internal/cli` and sample-through-receiver smoke. Commit: `feat(cli): supervise instrumented applications and flush on shutdown`.
 
 **Done when:** an actual application can be run through Tracelet without silent exporter redirection or orphaned children.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T08 (in progress)
-Last completed task: T07
+Current task: T09 (in progress)
+Last completed task: T08
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C07 (see git log)
+Branch / HEAD: feat/tracelet-core / C08 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
-Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver
-Verification run: T07 protocol, real SDK→SQLite, ingestion/collector race and vet pass; concurrent T08–T10 work remains uncommitted
-Next action: commit verified T08 child supervision and sample, then T09 sessions
+Verified implementation: project config, exact telemetry models, privacy, durable SQLite, ownership locks, bounded OTLP receiver, supervised run and instrumented sample
+Verification run: receiver/ingestion/CLI/supervisor/sample race tests pass; built sample produced 2 traces/8 spans, flushed on Ctrl+C, and reopened durably; T09–T11 work in progress
+Next action: finish T09 discovery/history lifecycle; integrate T10 queries
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T07 complete | Binary OTLP/gzip receiver, bounded decode and pending memory, durable ACK, safe errors/partial success | Protocol and real SDK→SQLite tests pass; collector/ingestion race+vet pass; malformed and overloaded requests recover | C07 (this commit) | T08; sustained load and cross-platform gates remain |
+| 2026-11-26 | T08 complete | Child environment precedence, direct argv/output, bounded process-tree shutdown, run CLI and Go sample | Race tests pass; startup failure releases ownership; built sample captures 2 traces/8 spans and error status, Ctrl+C exit0/reopen; Windows/Linux supervisor crosscompile | C08 (this commit) | T09; native Windows/Linux lifecycle unverified |
+| 2026-11-26 | T07 complete | Binary OTLP/gzip receiver, bounded decode and pending memory, durable ACK, safe errors/partial success | Protocol and real SDK→SQLite tests pass; collector/ingestion race+vet pass; malformed and overloaded requests recover | f0c075d | T08; sustained load and cross-platform gates remain |
 | 2026-11-26 | T06 complete | Private schema-v1 SQLite storage, durable sanitized transactions, duplicate rules and OS ownership locks | Storage/session tests+race+vet pass; crash releases lock; disk/write failure rollback; unsupported DB preservation; Windows/Linux lock crosscompile | 818fb62 | T07; native non-macOS tests and full crash/load gates remain |
 | 2026-11-26 | T05 complete | Recursive sanitizer, shared safe defaults, bounded marker reports and privacy docs | Sensitive sentinel absent in all serialized containers; typed values retained; privacy/config/CLI race+vet pass; count mismatch RED→GREEN | 04ba236 | T06; free-text values are not guaranteed scrubbed |
 | 2026-11-26 | T04 complete | Typed summaries, exact ProtoJSON wrapper, bounded identity/time/attribute validation and synthetic fixture generators | Focused tests/race pass; exact nanosecond/int64/bytes roundtrips; all fixture shapes validated | 0f3ef8e | T05; envelope byte IDs are base64, query IDs hex |
