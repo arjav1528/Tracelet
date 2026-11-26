@@ -289,11 +289,11 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T00. **Files:** `go.mod`, `go.sum`, `cmd/tracelet/main.go`, `internal/cli/root.go`, `internal/cli/version.go`, `Makefile`, `.github/workflows/ci.yml`, `docs/decisions.md`.
 
-- [ ] Select compatible maintained Go/dependency versions from official documentation; record exact pins and licenses. Use verified GitHub module path or the documented temporary local path.
-- [ ] Implement Cobra root and version commands with build version/commit/protocol fields; keep `main` thin and failures nonzero.
-- [ ] Add `TestVersionOutput` and `TestUnknownCommand`; assert deterministic version output and actionable invalid-command failure.
-- [ ] Make build/test/vet targets runnable; start CI with Go build/tests/vet and minimal permissions. Add frontend gates when T13 creates the frontend.
-- [ ] Run `go test ./internal/cli ./cmd/tracelet`, `go vet ./...`, and the initial build. Commit: `chore(build): bootstrap Go CLI and continuous integration`.
+- [x] Select compatible maintained Go/dependency versions from official documentation; record exact pins and licenses. Use verified GitHub module path or the documented temporary local path.
+- [x] Implement Cobra root and version commands with build version/commit/protocol fields; keep `main` thin and failures nonzero.
+- [x] Add `TestVersionOutput` and `TestUnknownCommand`; assert deterministic version output and actionable invalid-command failure.
+- [x] Make build/test/vet targets runnable; start CI with Go build/tests/vet and minimal permissions. Add frontend gates when T13 creates the frontend.
+- [x] Run `go test ./internal/cli ./cmd/tracelet`, `go vet ./...`, and the initial build. Commit: `chore(build): bootstrap Go CLI and continuous integration`.
 
 **Done when:** a clean checkout builds a version-reporting CLI and CI can verify it.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M0 (in progress)
-Current task: T01 (next)
-Last completed task: T00
+Current task: T02 (next)
+Last completed task: T01
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: main / C00 (see git log)
+Branch / HEAD: feat/tracelet-core / C01 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
-Verified implementation: none
-Verification run: planning content/coverage only; application checks not yet available
-Next action: T01 bootstrap CLI, build targets and CI
+Verified implementation: version/help CLI, deterministic build metadata, unknown-command errors
+Verification run: T01 tests failed before implementation; make check/build and CLI smoke now pass
+Next action: T02 real SDK/SQLite feasibility spike
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T00 complete | Local Git identity, ignore rules, preserved planning/reference files | Author and committer verified; source IDs, links and ignore rules checked | C00 (this commit; exact hash recorded in next increment) | T01; GitHub choices remain open |
+| 2026-11-26 | T01 complete | Cobra CLI, pinned Go toolchain/dependencies, Makefile and read-only CI | RED missing NewRoot; GREEN make check/build and version/invalid-command smoke | C01 (this commit) | T02; GitHub CI not run remotely |
+| 2026-11-26 | T00 complete | Local Git identity, ignore rules, preserved planning/reference files | Author and committer verified; source IDs, links and ignore rules checked | 695c49a | T01; GitHub choices remain open |
 | 2026-11-26 | Planning handoff created | Self-contained scope, tasks, contracts, commit plan and requirement map | Document review only; no application built/tested | None | Begin T00 on implementation request |
 
 Reusable prompt for another LLM:
