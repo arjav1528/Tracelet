@@ -195,7 +195,7 @@ Validate all path/query inputs, restrict sort keys to an allowlist, parameterize
 
 Loopback binding alone is insufficient. Enforce allowed Host/port and browser Origin; no wildcard CORS, reject hostile/null origins and cross-site browser fetches, serve no sensitive state through unauthenticated cross-origin scripts, and test DNS-rebinding-style Host values. Allow originless SDK traffic on the collector with appropriate content type. On the API, accept same-origin browser requests that omit Origin after Host/fetch-metadata checks, and native local CLI requests authenticated with the private instance nonce in a header. Reject a supplied hostile Origin or cross-site fetch metadata. Test these cases separately; do not reject every request merely because Origin is absent. Do not invent a mandatory OTLP auth extension. The threat model excludes a malicious same-user local process that already has filesystem access. Add restrictive CSP/frame policy, no third-party/CDN assets, no HTML rendering of telemetry, and clear caching rules for private responses. Non-loopback support is rejected in v0.1 rather than advertising unreviewed remote hosting.
 
-Export proposal: `{format:"tracelet.trace", version:1, exported_at:<RFC3339>, trace:<summary>, resource_spans:<OTLP ProtoJSON data>, warnings:[]}`. The format document must show an example, type/encoding rules, schema version, redaction marker, and completeness limitations. Full trace structure, all retained typed values, scope/events/links, nanosecond precision and warnings must survive an export/reparse fixture test. Read summary, resources/scopes and spans from one SQLite read transaction/snapshot; concurrent retention yields a complete earlier snapshot or clear not-found, never a partial successful export. This is a Tracelet envelope, not a promise of direct import into any OTLP viewer; an import command is deferred. Reapply current privacy policy on export of older records. `--out` creates a file exclusively or requires explicit overwrite; use a private temp file and atomic replacement where supported, clean up on failure, and keep stdout JSON separate from stderr diagnostics.
+Export proposal: `{format:"tracelet.trace", version:1, exported_at:<RFC3339>, trace:<summary>, resource_spans:<OTLP ProtoJSON data>, warnings:[]}`. The format document must show an example, type/encoding rules, schema version, redaction marker, and completeness limitations. Full trace structure, all retained typed values, scope/events/links, nanosecond precision and warnings must survive an export/reparse fixture test. Read summary, resources/scopes and spans from one SQLite read transaction/snapshot; concurrent retention yields a complete earlier snapshot or clear not-found, never a partial successful export. Generated ProtoJSON byte fields (including trace/span IDs) use base64; query-summary IDs use hexadecimal strings. This is a Tracelet envelope, not an OTLP/JSON wire request or a promise of direct import into any OTLP viewer; an import command is deferred. Reapply current privacy policy on export of older records. `--out` creates a file exclusively or requires explicit overwrite; use a private temp file and atomic replacement where supported, clean up on failure, and keep stdout JSON separate from stderr diagnostics.
 
 ### Source location and UI contract
 
@@ -325,10 +325,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T02. **Files:** `internal/trace/model.go`, `internal/ingestion/validate.go`, `testdata/`, model/validation tests.
 
-- [ ] Define TraceSummary, SpanSummary, TraceDetail, TreeWarning, typed detail/ID/time encoding and schema version. Preserve OTLP fields listed in §3.
-- [ ] Build synthetic simple, four-level nested, error/event, partial/late, multi-service, cyclic-parent, 2,000+ span, sensitive, path, duplicate/conflict, gzip/malformed/oversized fixtures with expected outcomes.
-- [ ] Add `TestValidateSpanIdentityAndTime` and `TestTelemetryRoundTripPrecision`: invalid/zero IDs and invalid intervals reject; valid zero duration and nanoseconds/int64 above JS safe range survive unchanged.
-- [ ] Run `go test ./internal/trace ./internal/ingestion`; ensure fixtures contain no real personal/production data. Commit: `feat(trace): define precise telemetry models and synthetic fixtures`.
+- [x] Define TraceSummary, SpanSummary, TraceDetail, TreeWarning, typed detail/ID/time encoding and schema version. Preserve OTLP fields listed in §3.
+- [x] Build synthetic simple, four-level nested, error/event, partial/late, multi-service, cyclic-parent, 2,000+ span, sensitive, path, duplicate/conflict, gzip/malformed/oversized fixtures with expected outcomes.
+- [x] Add `TestValidateSpanIdentityAndTime` and `TestTelemetryRoundTripPrecision`: invalid/zero IDs and invalid intervals reject; valid zero duration and nanoseconds/int64 above JS safe range survive unchanged.
+- [x] Run `go test ./internal/trace ./internal/ingestion`; ensure fixtures contain no real personal/production data. Commit: `feat(trace): define precise telemetry models and synthetic fixtures`.
 
 **Done when:** later tasks can share stable IDs/types and fixtures without flattening or losing telemetry data.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T04 (prepared; reviewing)
-Last completed task: T03
+Current task: T05 (in progress)
+Last completed task: T04
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C03 (see git log)
+Branch / HEAD: feat/tracelet-core / C04 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: version/help/init CLI, strict configuration v1, isolated SDK/SQLite feasibility
 Verification run: T01 tests failed before implementation; make check/build and CLI smoke now pass
-Next action: verify and commit T04 telemetry models/fixtures, then T05 sanitizer
+Next action: verify T05 sanitizer, then implement T06 durable storage and ownership
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T03 complete | Versioned YAML config, init/force, data paths, validation and docs | Missing Init/Load and init command RED→GREEN; invalid NUL path RED→GREEN; config/CLI tests, full check/build pass | C03 (this commit) | T04; no production capture yet |
+| 2026-11-26 | T04 complete | Typed summaries, exact ProtoJSON wrapper, bounded identity/time/attribute validation and synthetic fixture generators | Focused tests/race pass; exact nanosecond/int64/bytes roundtrips; all fixture shapes validated | C04 (this commit) | T05; envelope byte IDs are base64, query IDs hex |
+| 2026-11-26 | T03 complete | Versioned YAML config, init/force, data paths, validation and docs | Missing Init/Load and init command RED→GREEN; invalid NUL path RED→GREEN; config/CLI tests, full check/build pass | e5868ee | T04; no production capture yet |
 | 2026-11-26 | T02 complete | Isolated gzip SDK/SQLite spike, 100k-span layout comparison, feasibility and benchmark docs | SDK→commit→fresh process preserves exact metadata; focused race/vet and full make check/build pass with loopback permission | 87587a9 | T03; measurements storage-only, not release NFR proof |
 | 2026-11-26 | T01 complete | Cobra CLI, pinned Go toolchain/dependencies, Makefile and read-only CI | RED missing NewRoot; GREEN make check/build and version/invalid-command smoke | 6829ac3 | T02; GitHub CI not run remotely |
 | 2026-11-26 | T00 complete | Local Git identity, ignore rules, preserved planning/reference files | Author and committer verified; source IDs, links and ignore rules checked | 695c49a | T01; GitHub choices remain open |
