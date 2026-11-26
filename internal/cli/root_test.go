@@ -34,3 +34,22 @@ func TestUnknownCommand(t *testing.T) {
 		t.Fatalf("unexpected command output: %q", output.String())
 	}
 }
+
+func TestInitCommand(t *testing.T) {
+	t.Chdir(t.TempDir())
+	command := NewRoot("dev", "unknown")
+	var output bytes.Buffer
+	command.SetOut(&output)
+	command.SetArgs([]string{"init"})
+	if err := command.Execute(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), ".tracelet/config.yaml") {
+		t.Fatalf("missing config path: %q", output.String())
+	}
+	command = NewRoot("dev", "unknown")
+	command.SetArgs([]string{"init"})
+	if err := command.Execute(); err == nil {
+		t.Fatal("duplicate init succeeded without --force")
+	}
+}

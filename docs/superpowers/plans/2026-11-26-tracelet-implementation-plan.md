@@ -314,10 +314,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T01, T02. **Files:** `internal/config/`, `internal/cli/init.go`, config tests, `docs/configuration.md`.
 
-- [ ] Implement `config.Load` and validated defaults from §3; assign project ID; choose OS data paths; define flags > file > defaults precedence. OTEL environment resolution belongs to T08.
-- [ ] Implement `init` as exclusive creation with safe permissions, no source modification, and refusal to overwrite unless explicitly requested. Print path and next step.
-- [ ] Add tests for duplicate init, malformed/unknown YAML, unsupported schema version, relative paths, permissions, invalid limits/ports, and unsupported body capture/non-loopback binding.
-- [ ] Run `go test ./internal/config ./internal/cli`; inspect a generated sample config. Commit: `feat(config): add versioned project setup and safe defaults`.
+- [x] Implement `config.Load` and validated defaults from §3; assign project ID; choose OS data paths; define flags > file > defaults precedence. OTEL environment resolution belongs to T08.
+- [x] Implement `init` as exclusive creation with safe permissions, no source modification, and refusal to overwrite unless explicitly requested. Print path and next step.
+- [x] Add tests for duplicate init, malformed/unknown YAML, unsupported schema version, relative paths, permissions, invalid limits/ports, and unsupported body capture/non-loopback binding.
+- [x] Run `go test ./internal/config ./internal/cli`; inspect a generated sample config. Commit: `feat(config): add versioned project setup and safe defaults`.
 
 **Done when:** configuration is deterministic, documented, and never destructively overwritten by default.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T03 (in progress)
-Last completed task: T02
+Current task: T04 (prepared; reviewing)
+Last completed task: T03
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C02 (see git log)
+Branch / HEAD: feat/tracelet-core / C03 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
-Verified implementation: version/help CLI, deterministic build metadata, unknown-command errors
+Verified implementation: version/help/init CLI, strict configuration v1, isolated SDK/SQLite feasibility
 Verification run: T01 tests failed before implementation; make check/build and CLI smoke now pass
-Next action: finish T03 config/CLI integration, then commit prepared T04 models
+Next action: verify and commit T04 telemetry models/fixtures, then T05 sanitizer
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T02 complete | Isolated gzip SDK/SQLite spike, 100k-span layout comparison, feasibility and benchmark docs | SDK→commit→fresh process preserves exact metadata; focused race/vet and full make check/build pass with loopback permission | C02 (this commit) | T03; measurements storage-only, not release NFR proof |
+| 2026-11-26 | T03 complete | Versioned YAML config, init/force, data paths, validation and docs | Missing Init/Load and init command RED→GREEN; invalid NUL path RED→GREEN; config/CLI tests, full check/build pass | C03 (this commit) | T04; no production capture yet |
+| 2026-11-26 | T02 complete | Isolated gzip SDK/SQLite spike, 100k-span layout comparison, feasibility and benchmark docs | SDK→commit→fresh process preserves exact metadata; focused race/vet and full make check/build pass with loopback permission | 87587a9 | T03; measurements storage-only, not release NFR proof |
 | 2026-11-26 | T01 complete | Cobra CLI, pinned Go toolchain/dependencies, Makefile and read-only CI | RED missing NewRoot; GREEN make check/build and version/invalid-command smoke | 6829ac3 | T02; GitHub CI not run remotely |
 | 2026-11-26 | T00 complete | Local Git identity, ignore rules, preserved planning/reference files | Author and committer verified; source IDs, links and ignore rules checked | 695c49a | T01; GitHub choices remain open |
 | 2026-11-26 | Planning handoff created | Self-contained scope, tasks, contracts, commit plan and requirement map | Document review only; no application built/tested | None | Begin T00 on implementation request |
