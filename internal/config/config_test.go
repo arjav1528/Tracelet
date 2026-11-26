@@ -160,3 +160,18 @@ func TestLoadPermissionFailure(t *testing.T) {
 		t.Fatal("read inaccessible configuration")
 	}
 }
+
+func TestLoadRejectsExcessRedactionPatterns(t *testing.T) {
+	root := t.TempDir()
+	path, err := Init(root, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := "version: 1\nproject:\n  id: 11111111111111111111111111111111\n  name: sample\nprivacy:\n  redact_attribute_keys:\n" + strings.Repeat("    - custom.private\n", 129)
+	if err := os.WriteFile(path, []byte(body), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Load(path); err == nil {
+		t.Fatal("accepted more patterns than sanitizer supports")
+	}
+}

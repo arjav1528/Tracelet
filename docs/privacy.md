@@ -1,0 +1,11 @@
+# Local telemetry and privacy
+
+Tracelet's sanitizer replaces sensitive attribute values with `[REDACTED]` before persistence. It traverses span, resource, instrumentation-scope, event and link attributes, including nested key-value lists and arrays. Unrelated types, identifiers and timestamps are retained. Sanitization is idempotent.
+
+Patterns are case-insensitive full-key matches: `*` matches any sequence and `?` one character, including Unicode characters. Other characters are literal. Both each key and its dotted nested path are checked. Default patterns cover authorization, cookies, password/passwd, token, secret, API key, email, body/payload, `url.full`, `url.query`, `http.url`, `db.statement` and `db.query.text`. Custom patterns add to defaults and cannot disable them. Configuration permits at most 128 effective pattern entries of 1–256 UTF-8 bytes each.
+
+The sanitizer reports a redaction count and structural paths, never original values or key text. It records at most 1,024 paths and explicitly marks a truncated report while continuing to redact all values and count them. It rejects nesting over 64 or traversal over four million nodes as a defensive ceiling; configured ingestion limits are smaller and apply first. On a sanitization error the owned request is cleared and must be rejected, never persisted as the original payload.
+
+Key matching is not comprehensive secret or personal-data removal. Arbitrary span names, exception messages, stack traces, unknown/free-text fields and the child application's own stdout/stderr can contain sensitive material. Tracelet does not promise exports are safe to publish without inspection. Full URLs, query text and HTTP bodies are redacted by default even when instrumented upstream; Tracelet does not add body capture. No unredacted export mode is planned for v0.1.
+
+Production persistence, retention and export are implemented in their subsequent tasks. They must reuse this sanitizer, keep internal diagnostics free of payloads, and reapply the current policy when exporting older records. Config/data locations and permissions are described in [configuration](configuration.md). At this stage no capture service is exposed by the CLI.

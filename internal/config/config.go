@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"go.yaml.in/yaml/v3"
+	"tracelet.local/tracelet/internal/privacy"
 )
 
 type Config struct {
@@ -123,7 +124,7 @@ func Load(path string) (Config, error) {
 	} else if !filepath.IsAbs(c.Storage.Path) {
 		c.Storage.Path = filepath.Join(root, c.Storage.Path)
 	}
-	for _, pattern := range sensitiveKeys {
+	for _, pattern := range privacy.DefaultPolicy().Patterns {
 		found := false
 		for _, existing := range c.Privacy.RedactAttributeKeys {
 			if strings.EqualFold(pattern, existing) {
@@ -134,6 +135,9 @@ func Load(path string) (Config, error) {
 		if !found {
 			c.Privacy.RedactAttributeKeys = append(c.Privacy.RedactAttributeKeys, pattern)
 		}
+	}
+	if len(c.Privacy.RedactAttributeKeys) > 128 {
+		return c, errors.New("effective redaction policy exceeds 128 patterns")
 	}
 	return c, nil
 }
@@ -186,6 +190,9 @@ func (c Config) validate() error {
 	}
 	if l.MaxDepth > 64 {
 		return errors.New("max_depth must not exceed 64")
+	}
+	if len(c.Privacy.RedactAttributeKeys) > 128 {
+		return errors.New("redaction policy exceeds 128 patterns")
 	}
 	for _, p := range c.Privacy.RedactAttributeKeys {
 		if strings.TrimSpace(p) == "" || len(p) > 256 {

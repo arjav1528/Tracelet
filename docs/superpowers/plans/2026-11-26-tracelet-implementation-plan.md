@@ -336,10 +336,10 @@ All boxes below are initially unchecked. **T00–T24 are the required build sequ
 
 **Depends on:** T03, T04. **Files:** `internal/privacy/redact.go`, adjacent tests, `testdata/privacy/`, `docs/privacy.md`.
 
-- [ ] Implement the single recursive sanitizer and exact configurable glob semantics from §3; preserve non-sensitive value types and record redaction markers.
-- [ ] Add `TestRedactionAllContainers` for span/resource/scope/event/link/nested keys, key casing, bare and namespaced secrets, body/query fields, and invalid patterns.
-- [ ] Assert synthetic secret sentinels do not survive the sanitized serialized payload; assert an unrelated typed attribute remains unchanged. Document free-text/child-output limitations.
-- [ ] Run `go test ./internal/privacy`; commit: `feat(privacy): redact sensitive telemetry before persistence`.
+- [x] Implement the single recursive sanitizer and exact configurable glob semantics from §3; preserve non-sensitive value types and record redaction markers.
+- [x] Add `TestRedactionAllContainers` for span/resource/scope/event/link/nested keys, key casing, bare and namespaced secrets, body/query fields, and invalid patterns.
+- [x] Assert synthetic secret sentinels do not survive the sanitized serialized payload; assert an unrelated typed attribute remains unchanged. Document free-text/child-output limitations.
+- [x] Run `go test ./internal/privacy`; commit: `feat(privacy): redact sensitive telemetry before persistence`.
 
 **Done when:** production persistence has a reusable, tested sanitizer and a clear privacy contract.
 
@@ -750,14 +750,14 @@ This state is a template to update during implementation. Do not replace evidenc
 ```markdown
 Last updated: 2026-11-26
 Current milestone: M1 (in progress)
-Current task: T05 (in progress)
-Last completed task: T04
+Current task: T06 (in progress)
+Last completed task: T05
 Repository/remote: local Git initialized; no remote
-Branch / HEAD: feat/tracelet-core / C04 (see git log)
+Branch / HEAD: feat/tracelet-core / C05 (see git log)
 Git identity required: Arjav Patel <arjav1528@gmail.com>
 Verified implementation: version/help/init CLI, strict configuration v1, isolated SDK/SQLite feasibility
 Verification run: T01 tests failed before implementation; make check/build and CLI smoke now pass
-Next action: verify T05 sanitizer, then implement T06 durable storage and ownership
+Next action: finish T06 storage and ownership, then T07 bounded receiver
 External decisions pending: GitHub owner/name/visibility, license, account email association
 Scope decisions: PRD baseline; proposed engineering defaults in §3
 Do not lose: source requirements and precision/privacy/lifecycle contracts; completed tasks require evidence
@@ -767,7 +767,8 @@ Execution log (append one row per completed or materially blocked increment):
 
 | Date | Task/status | Files/behavior changed | Verification and result | Commit / PR | Remaining issue / next task |
 |---|---|---|---|---|---|
-| 2026-11-26 | T04 complete | Typed summaries, exact ProtoJSON wrapper, bounded identity/time/attribute validation and synthetic fixture generators | Focused tests/race pass; exact nanosecond/int64/bytes roundtrips; all fixture shapes validated | C04 (this commit) | T05; envelope byte IDs are base64, query IDs hex |
+| 2026-11-26 | T05 complete | Recursive sanitizer, shared safe defaults, bounded marker reports and privacy docs | Sensitive sentinel absent in all serialized containers; typed values retained; privacy/config/CLI race+vet pass; count mismatch RED→GREEN | C05 (this commit) | T06; free-text values are not guaranteed scrubbed |
+| 2026-11-26 | T04 complete | Typed summaries, exact ProtoJSON wrapper, bounded identity/time/attribute validation and synthetic fixture generators | Focused tests/race pass; exact nanosecond/int64/bytes roundtrips; all fixture shapes validated | 0f3ef8e | T05; envelope byte IDs are base64, query IDs hex |
 | 2026-11-26 | T03 complete | Versioned YAML config, init/force, data paths, validation and docs | Missing Init/Load and init command RED→GREEN; invalid NUL path RED→GREEN; config/CLI tests, full check/build pass | e5868ee | T04; no production capture yet |
 | 2026-11-26 | T02 complete | Isolated gzip SDK/SQLite spike, 100k-span layout comparison, feasibility and benchmark docs | SDK→commit→fresh process preserves exact metadata; focused race/vet and full make check/build pass with loopback permission | 87587a9 | T03; measurements storage-only, not release NFR proof |
 | 2026-11-26 | T01 complete | Cobra CLI, pinned Go toolchain/dependencies, Makefile and read-only CI | RED missing NewRoot; GREEN make check/build and version/invalid-command smoke | 6829ac3 | T02; GitHub CI not run remotely |

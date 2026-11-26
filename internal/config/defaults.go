@@ -1,11 +1,5 @@
 package config
 
-var sensitiveKeys = []string{
-	"*authorization*", "*cookie*", "*password*", "*passwd*", "*token*", "*secret*",
-	"*api_key*", "*apikey*", "*email*", "*body*", "*payload*",
-	"url.full", "url.query", "http.url", "db.statement", "db.query.text",
-}
-
 func defaults() Config {
 	var c Config
 	c.Version = 1
